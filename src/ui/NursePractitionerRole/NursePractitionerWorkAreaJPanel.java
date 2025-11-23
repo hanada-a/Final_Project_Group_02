@@ -11,8 +11,18 @@ import javax.swing.*;
  */
 public class NursePractitionerWorkAreaJPanel extends JPanel {
     
+    private JPanel userProcessContainer;
+    private UserAccount account;
+    private Organization organization;
+    private Business business;
+    
     public NursePractitionerWorkAreaJPanel(JPanel userProcessContainer, UserAccount account,
                                           Organization organization, Business business) {
+        this.userProcessContainer = userProcessContainer;
+        this.account = account;
+        this.organization = organization;
+        this.business = business;
+        
         setLayout(new BorderLayout());
         
         // Header
@@ -28,19 +38,60 @@ public class NursePractitionerWorkAreaJPanel extends JPanel {
         JPanel mainPanel = new JPanel(new GridLayout(5, 1, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
-        mainPanel.add(createButton("Administer Vaccinations"));
-        mainPanel.add(createButton("Report Disease Cases"));
-        mainPanel.add(createButton("View Patient Records"));
-        mainPanel.add(createButton("Schedule Appointments"));
-        mainPanel.add(createButton("View Vaccine Availability"));
+        mainPanel.add(createButton("Administer Vaccinations", this::administerVaccinations));
+        mainPanel.add(createButton("Report Disease Cases", this::reportDiseaseCases));
+        mainPanel.add(createButton("View Patient Records", this::viewPatientRecords));
+        mainPanel.add(createButton("Schedule Appointments", this::scheduleAppointments));
+        mainPanel.add(createButton("View Vaccine Availability", this::viewVaccineAvailability));
         
         add(mainPanel, BorderLayout.CENTER);
     }
     
-    private JButton createButton(String text) {
+    private JButton createButton(String text, Runnable action) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.PLAIN, 14));
         button.setPreferredSize(new Dimension(300, 50));
+        button.addActionListener(e -> action.run());
         return button;
+    }
+    
+    private void administerVaccinations() {
+        AdministerVaccinationsJPanel panel = new AdministerVaccinationsJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("AdministerVaccinations", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void reportDiseaseCases() {
+        ReportDiseaseCasesJPanel panel = new ReportDiseaseCasesJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ReportDiseaseCases", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void viewPatientRecords() {
+        ViewPatientRecordsJPanel panel = new ViewPatientRecordsJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ViewPatientRecords", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void scheduleAppointments() {
+        ScheduleAppointmentsJPanel panel = new ScheduleAppointmentsJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ScheduleAppointments", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void viewVaccineAvailability() {
+        ViewVaccineAvailabilityJPanel panel = new ViewVaccineAvailabilityJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ViewVaccineAvailability", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
     }
 }
