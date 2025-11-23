@@ -1,0 +1,5 @@
+Workflow Reflection Essay
+
+The Workflow Lab demonstrates the Abstract Factory design pattern through its use of abstract classes for Organization and Role. This pattern is essential for creating flexible workflow systems that can support different types of users with varying responsibilities. In this healthcare system, the abstract Role class serves as a blueprint that defines how each user type should create their workspace. When someone logs in, the system doesn't need to know whether they are an admin, doctor, or lab assistant beforehand. Instead, each concrete role class like AdminRole or DoctorRole implements the createWorkArea method to generate their specific interface. This design allows the workflow to seamlessly direct users to their appropriate work areas without complicated conditional statements. The pattern supports workflow by making the system easily expandable; adding new roles simply requires creating another class that extends Role, rather than rewriting existing code throughout the entire application.
+
+Word Count: 150
