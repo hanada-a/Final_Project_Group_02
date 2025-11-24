@@ -11,8 +11,18 @@ import javax.swing.*;
  */
 public class ProviderCoordinatorWorkAreaJPanel extends JPanel {
     
+    private JPanel userProcessContainer;
+    private UserAccount account;
+    private Organization organization;
+    private Business business;
+    
     public ProviderCoordinatorWorkAreaJPanel(JPanel userProcessContainer, UserAccount account,
                                             Organization organization, Business business) {
+        this.userProcessContainer = userProcessContainer;
+        this.account = account;
+        this.organization = organization;
+        this.business = business;
+        
         setLayout(new BorderLayout());
         
         // Header
@@ -28,19 +38,60 @@ public class ProviderCoordinatorWorkAreaJPanel extends JPanel {
         JPanel mainPanel = new JPanel(new GridLayout(5, 1, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
-        mainPanel.add(createButton("Manage Healthcare Providers"));
-        mainPanel.add(createButton("Process Vaccine Shipment Requests"));
-        mainPanel.add(createButton("Schedule Compliance Audits"));
-        mainPanel.add(createButton("View Provider Registry"));
-        mainPanel.add(createButton("Request Vaccine Allocation from CDC"));
+        mainPanel.add(createButton("Manage Healthcare Providers", this::manageHealthcareProviders));
+        mainPanel.add(createButton("Process Vaccine Shipment Requests", this::processVaccineShipmentRequests));
+        mainPanel.add(createButton("Schedule Compliance Audits", this::scheduleComplianceAudits));
+        mainPanel.add(createButton("View Provider Registry", this::viewProviderRegistry));
+        mainPanel.add(createButton("Request Vaccine Allocation from CDC", this::requestVaccineAllocationFromCDC));
         
         add(mainPanel, BorderLayout.CENTER);
     }
     
-    private JButton createButton(String text) {
+    private JButton createButton(String text, Runnable action) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.PLAIN, 14));
         button.setPreferredSize(new Dimension(350, 50));
+        button.addActionListener(e -> action.run());
         return button;
+    }
+    
+    private void manageHealthcareProviders() {
+        ManageHealthcareProvidersJPanel panel = new ManageHealthcareProvidersJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ManageHealthcareProvidersJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void processVaccineShipmentRequests() {
+        ProcessVaccineShipmentRequestsJPanel panel = new ProcessVaccineShipmentRequestsJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ProcessVaccineShipmentRequestsJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void scheduleComplianceAudits() {
+        ScheduleComplianceAuditsJPanel panel = new ScheduleComplianceAuditsJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ScheduleComplianceAuditsJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void viewProviderRegistry() {
+        ViewProviderRegistryJPanel panel = new ViewProviderRegistryJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ViewProviderRegistryJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void requestVaccineAllocationFromCDC() {
+        RequestVaccineAllocationFromCDCJPanel panel = new RequestVaccineAllocationFromCDCJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("RequestVaccineAllocationFromCDCJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
     }
 }

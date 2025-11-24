@@ -11,8 +11,18 @@ import javax.swing.*;
  */
 public class DataAnalystWorkAreaJPanel extends JPanel {
     
+    private JPanel userProcessContainer;
+    private UserAccount account;
+    private Organization organization;
+    private Business business;
+    
     public DataAnalystWorkAreaJPanel(JPanel userProcessContainer, UserAccount account,
                                     Organization organization, Business business) {
+        this.userProcessContainer = userProcessContainer;
+        this.account = account;
+        this.organization = organization;
+        this.business = business;
+        
         setLayout(new BorderLayout());
         
         // Header
@@ -28,25 +38,60 @@ public class DataAnalystWorkAreaJPanel extends JPanel {
         JPanel mainPanel = new JPanel(new GridLayout(5, 1, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
-        JButton viewDataRequestsBtn = createStyledButton("View Data Analysis Requests");
-        JButton generateReportBtn = createStyledButton("Generate Statistical Report");
-        JButton viewDashboardBtn = createStyledButton("View Analytics Dashboard");
-        JButton exportDataBtn = createStyledButton("Export Data");
-        JButton processRequestBtn = createStyledButton("Process Pending Requests");
-        
-        mainPanel.add(viewDataRequestsBtn);
-        mainPanel.add(generateReportBtn);
-        mainPanel.add(viewDashboardBtn);
-        mainPanel.add(exportDataBtn);
-        mainPanel.add(processRequestBtn);
+        mainPanel.add(createStyledButton("View Data Analysis Requests", this::viewDataRequests));
+        mainPanel.add(createStyledButton("Generate Statistical Report", this::generateReport));
+        mainPanel.add(createStyledButton("View Analytics Dashboard", this::viewDashboard));
+        mainPanel.add(createStyledButton("Export Data", this::exportData));
+        mainPanel.add(createStyledButton("Process Pending Requests", this::processPendingRequests));
         
         add(mainPanel, BorderLayout.CENTER);
     }
     
-    private JButton createStyledButton(String text) {
+    private JButton createStyledButton(String text, Runnable action) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.PLAIN, 14));
         button.setPreferredSize(new Dimension(300, 50));
+        button.addActionListener(e -> action.run());
         return button;
+    }
+    
+    private void viewDataRequests() {
+        ViewDataAnalysisRequestsJPanel panel = new ViewDataAnalysisRequestsJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ViewDataAnalysisRequestsJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void generateReport() {
+        GenerateStatisticalReportJPanel panel = new GenerateStatisticalReportJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("GenerateStatisticalReportJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void viewDashboard() {
+        ViewAnalyticsDashboardJPanel panel = new ViewAnalyticsDashboardJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ViewAnalyticsDashboardJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void exportData() {
+        ExportDataJPanel panel = new ExportDataJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ExportDataJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void processPendingRequests() {
+        ProcessPendingRequestsJPanel panel = new ProcessPendingRequestsJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ProcessPendingRequestsJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
     }
 }

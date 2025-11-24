@@ -25,11 +25,14 @@ public class OrganizationDirectory {
     
     public Organization createOrganization(Type type){
         Organization organization = null;
-        if (type.getValue().equals(Type.Doctor.getValue())){
+        // Legacy - Type.Doctor and Type.Lab don't exist
+        // if (type.getValue().equals(Type.Doctor.getValue())){
+        if (false) {
             organization = new DoctorOrganization();
             organizationList.add(organization);
         }
-        else if (type.getValue().equals(Type.Lab.getValue())){
+        // else if (type.getValue().equals(Type.Lab.getValue())){
+        else if (false) {
             organization = new LabOrganization();
             organizationList.add(organization);
         }

@@ -15,7 +15,8 @@ import java.util.ArrayList;
 public class LabOrganization extends Organization{
 
     public LabOrganization() {
-        super(Organization.Type.Lab.getValue());
+        // Legacy - Type.Lab doesn't exist
+        super("Lab"); // Organization.Type.Lab.getValue()
     }
 
     @Override

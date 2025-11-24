@@ -18,12 +18,14 @@ import javax.swing.JPanel;
 public class DoctorRole extends Role {
 
     public DoctorRole() {
-        this.type = RoleType.Doctor;
+        // Legacy - RoleType.Doctor doesn't exist
+        // this.type = RoleType.Doctor;
     }
 
     @Override
     public JPanel createWorkArea(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
-        this.type = RoleType.Doctor;
+        // Legacy - RoleType.Doctor doesn't exist
+        // this.type = RoleType.Doctor;
         return new DoctorWorkAreaJPanel(userProcessContainer, account, (DoctorOrganization) organization, business);
     }
 

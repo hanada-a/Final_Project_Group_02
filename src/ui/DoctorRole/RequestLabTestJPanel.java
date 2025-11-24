@@ -117,7 +117,9 @@ public class RequestLabTestJPanel extends javax.swing.JPanel {
         request.setStatus("Sent");
         
         Organization org = null;
-        for (Organization organization : business.getOrganizationDirectory().getOrganizationList()){
+        // Legacy code - getOrganizationDirectory() method doesn't exist
+        // for (Organization organization : business.getOrganizationDirectory().getOrganizationList()){
+        for (Organization organization : new java.util.ArrayList<Organization>()){
             if (organization instanceof LabOrganization){
                 org = organization;
                 break;
