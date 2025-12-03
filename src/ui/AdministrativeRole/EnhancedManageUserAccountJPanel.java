@@ -503,6 +503,17 @@ public class EnhancedManageUserAccountJPanel extends JPanel {
             }
             
             // Update account
+            String newUsername = txtUsername.getText().trim();
+            if (!newUsername.isEmpty() && !newUsername.equals(selectedAccount.getUsername())) {
+                // Check if new username already exists
+                for (UserAccount ua : org.getUserAccountDirectory().getUserAccountList()) {
+                    if (ua != selectedAccount && ua.getUsername().equals(newUsername)) {
+                        throw new ValidationException("Username '" + newUsername + "' already exists");
+                    }
+                }
+                selectedAccount.setUsername(newUsername);
+            }
+            
             selectedAccount.setEmployee(employee);
             selectedAccount.setRole(selectedRole);
             selectedAccount.setEnabled(chkEnabled.isSelected());
