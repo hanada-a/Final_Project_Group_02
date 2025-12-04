@@ -462,6 +462,7 @@ public class ConfigureABusiness {
     private static void createSampleWorkRequests(Enterprise cdcEnt, Enterprise stateEnt, 
                                                   Enterprise providerEnt, Business business) {
         // Get organizations (skip admin orgs at index 0)
+        Organization diseaseSurv = cdcEnt.getOrganizationDirectory().getOrganizationList().get(1);
         Organization vaccineDist = cdcEnt.getOrganizationDirectory().getOrganizationList().get(2);
         Organization publicHealth = stateEnt.getOrganizationDirectory().getOrganizationList().get(1);
         Organization providerRegistry = stateEnt.getOrganizationDirectory().getOrganizationList().get(2);
@@ -470,7 +471,7 @@ public class ConfigureABusiness {
         
         // Create 25+ diverse work requests for analytics and better demo
         
-        // 1-5: Disease Reports (Cross-Enterprise)
+        // 1-5: Disease Reports (Cross-Enterprise) - Public Health
         for (int i = 0; i < 5; i++) {
             DiseaseReportRequest diseaseReport = new DiseaseReportRequest();
             Disease disease = business.getDiseaseDirectory().get(i % 4);
@@ -485,6 +486,24 @@ public class ConfigureABusiness {
             diseaseReport.setMessage("Disease: " + disease.getName() + ", Cases: " + caseCount);
             diseaseReport.setStatus(i < 3 ? "Pending" : "Completed");
             publicHealth.getWorkQueue().getWorkRequestList().add(diseaseReport);
+        }
+        
+        // Disease Surveillance Reports for Epidemiologist (sarah.johnson)
+        String[] locations = {"New York City, NY", "Buffalo, NY", "Rochester, NY", "Albany, NY", "Syracuse, NY", "Yonkers, NY"};
+        for (int i = 0; i < 6; i++) {
+            DiseaseReportRequest surveillanceReport = new DiseaseReportRequest();
+            Disease disease = business.getDiseaseDirectory().get(i % 4);
+            int caseCount = random.nextInt(50) + 10; // Larger case counts for surveillance
+            surveillanceReport.setDisease(disease);
+            surveillanceReport.setCaseCount(caseCount);
+            surveillanceReport.setLocation(locations[i % locations.length]);
+            surveillanceReport.setPatientDemographics("Mixed population, Ages 5-75, All genders");
+            surveillanceReport.setOnsetDate(getDateInPast(random.nextInt(14) + 1));
+            surveillanceReport.setSender(publicHealth.getUserAccountDirectory().getUserAccountList().get(0));
+            surveillanceReport.setReceiver(diseaseSurv.getUserAccountDirectory().getUserAccountList().get(0));
+            surveillanceReport.setMessage("Regional surveillance: " + disease.getName() + ", Cases: " + caseCount);
+            surveillanceReport.setStatus(i < 3 ? "Pending" : "Analyzed");
+            diseaseSurv.getWorkQueue().getWorkRequestList().add(surveillanceReport);
         }
         
         // 6-10: Vaccine Allocations (Cross-Enterprise)
