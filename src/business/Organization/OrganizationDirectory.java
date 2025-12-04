@@ -10,8 +10,8 @@ import java.util.ArrayList;
 /**
  *
  * @author raunak
- * @author hanada.a
- * @author sowell.m
+ * @author Akira Hanada
+ * @author Maxwell Sowell
  */
 public class OrganizationDirectory {
     

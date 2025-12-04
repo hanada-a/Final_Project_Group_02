@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ui.LabAssistantRole;
+package ui.LabTechRole;
 
 import business.Business;
 import business.Organization.LabOrganization;
 import business.Organization.Organization;
 import business.UserAccount.UserAccount;
-import business.WorkQueue.LabTestWorkRequest;
+import business.WorkQueue.LabTestRequest;
 import business.WorkQueue.WorkRequest;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author raunak
  */
-public class LabAssistantWorkAreaJPanel extends javax.swing.JPanel {
+public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
 
     private JPanel userProcessContainer;
     private Business business;
@@ -29,7 +29,7 @@ public class LabAssistantWorkAreaJPanel extends javax.swing.JPanel {
     /**
      * Creates new form LabAssistantWorkAreaJPanel
      */
-    public LabAssistantWorkAreaJPanel(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
+    public LabTechWorkAreaJPanel(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
         initComponents();
 
         this.userProcessContainer = userProcessContainer;
@@ -200,7 +200,7 @@ public class LabAssistantWorkAreaJPanel extends javax.swing.JPanel {
         int selectedRow = tblWorkRequests.getSelectedRow();
 
         if (selectedRow >= 0) {
-            LabTestWorkRequest request = (LabTestWorkRequest) tblWorkRequests.getValueAt(selectedRow, 0);
+            LabTestRequest request = (LabTestRequest) tblWorkRequests.getValueAt(selectedRow, 0);
 
             request.setStatus("Processing");
 

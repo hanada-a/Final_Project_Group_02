@@ -7,12 +7,12 @@ package business.Role;
 import business.Business;
 import business.Organization.Organization;
 import business.UserAccount.UserAccount;
-import ui.LabAssistantRole.LabAssistantWorkAreaJPanel;
+import ui.LabTechRole.LabTechWorkAreaJPanel;
 import javax.swing.JPanel;
 
 /**
  *
- * @author sowell.m
+ * @author Maxwell Sowell
  */
 public class LabTechRole extends Role {
 
@@ -25,7 +25,7 @@ public class LabTechRole extends Role {
     public JPanel createWorkArea(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
         // Legacy - RoleType.LabAssistant doesn't exist
         // this.type = RoleType.LabAssistant;
-        return new LabAssistantWorkAreaJPanel(userProcessContainer, account, organization, business);
+        return new LabTechWorkAreaJPanel(userProcessContainer, account, organization, business);
     }
 
 }

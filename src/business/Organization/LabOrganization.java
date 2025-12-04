@@ -12,7 +12,8 @@ import java.util.ArrayList;
  * Health provider Organization offering laboratory services,
  * including testing and diagnostics
  * 
- * @author sowell.m
+ * @author raunak
+ * @author Maxwell Sowell
  */
 public class LabOrganization extends Organization {
 

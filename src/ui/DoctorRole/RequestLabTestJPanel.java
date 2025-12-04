@@ -8,7 +8,7 @@ import business.Business;
 import business.Organization.LabOrganization;
 import business.Organization.Organization;
 import business.UserAccount.UserAccount;
-import business.WorkQueue.LabTestWorkRequest;
+import business.WorkQueue.LabTestRequest;
 import java.awt.CardLayout;
 import java.awt.Component;
 import javax.swing.JOptionPane;
@@ -111,7 +111,7 @@ public class RequestLabTestJPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Please enter something to send.");
             return;
         }
-        LabTestWorkRequest request = new LabTestWorkRequest();
+        LabTestRequest request = new LabTestRequest();
         request.setMessage(message);
         request.setSender(userAccount);
         request.setStatus("Sent");

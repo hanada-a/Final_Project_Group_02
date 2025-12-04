@@ -20,10 +20,11 @@ import java.util.Random;
 
 /**
  * Configures the complete Public Health Information Management System
- * with 1 Network, 3 Enterprises, 9 Organizations (including Admin), 50+ employees
+ * with 1 Network, 3 Enterprises, 11 Organizations (including Admin), 50+ employees
  * Uses Faker library for realistic data generation (with fallback if not available)
  * 
  * @author Akira Hanada
+ * @author Maxwell Sowell
  */
 public class ConfigureABusiness {
     
@@ -384,6 +385,34 @@ public class ConfigureABusiness {
                                     generatePhone(), "Nurse Practitioner", 
                                     new NursePractitionerRole(), null, null);
         }
+        
+        
+        // Organization 7: Laboratory Services (8+ employees)
+        LabOrganization labOrg = 
+            (LabOrganization) providerEnterprise.createOrganization(
+                "Northeast Regional Medical Laboratory", Organization.Type.Lab);
+        
+        createEmployeeAndAccount(labOrg, "John Bob", "john.bob@nrml.org", 
+                                "(212) 555-0701", "Senior Lab Technician", new LabTechRole(), 
+                                "john.bob", "Lab@2024!");
+        
+        createEmployeeAndAccount(labOrg, "Mary Sue", "mary.sue@nrml.org", 
+                                "(212) 555-0702", "Lab Technician", new LabTechRole(), 
+                                "mary.sue", "Lab@2024!");
+        
+        createEmployeeAndAccount(labOrg, "Dr. Lisa Ann", "lisa.ann@nrml.org", 
+                                "(212) 555-0703", "Lab Director", new LabTechRole(), 
+                                "lisa.ann", "Lab@2024!");
+        
+        // Generate additional lab staff
+        for (int i = 0; i < 5; i++) {
+            String name = generateName();
+            createEmployeeAndAccount(labOrg, name, generateEmail(name, "nrml.org"),
+                                    generatePhone(), generateJobTitle("Lab Technician"), 
+                                    new LabTechRole(), null, null);
+        }
+        
+        
     }
     
     private static void createEmployeeAndAccount(Organization org, String name, String email, 
@@ -504,6 +533,34 @@ public class ConfigureABusiness {
             cdcEnt.getOrganizationDirectory().getOrganizationList().get(1)
                   .getWorkQueue().getWorkRequestList().add(analysis);
         }
+        
+        // 26-30: Lab Test Requests (Cross-Organization)
+        Organization labOrg = providerEnt.getOrganizationDirectory().getOrganizationList().get(3);
+        
+        for (int i = 0; i < 5; i++) {
+            LabTestRequest labTest = new LabTestRequest();
+            
+            String[] testTypes = {"COVID-19 PCR Test", "COVID-19 Antibody Test", "Influenza Test", 
+                    "Blood Culture", "Complete Blood Count"};
+            labTest.setTestType(testTypes[i % testTypes.length]);
+            
+            labTest.setUrgencyLevel(i < 2 ? "URGENT" : "Normal");
+            labTest.setMessage("Patient ID: PT" + (10000 + i) + " - " + testTypes[i % testTypes.length]);
+            
+            // Demo lab tests requested by Clinic Nurse Susan Taylor from John Bob
+            labTest.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(1));
+            labTest.setReceiver(labOrg.getUserAccountDirectory().getUserAccountList().get(0));
+            
+            labTest.setStatus(i < 3 ? "Pending" : "Completed");
+            
+            if (i >= 3) {
+                labTest.setTestResult("Test result: " + (i % 2 == 0 ? "Negative" : "Positive"));
+                labTest.setResolveDate(getDateInPast(random.nextInt(5) + 1));
+            }
+            
+            labOrg.getWorkQueue().getWorkRequestList().add(labTest);
+        }
+        
     }
     
     private static Date getDateInFuture(int days) {
