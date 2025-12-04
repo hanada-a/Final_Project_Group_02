@@ -413,6 +413,32 @@ public class ConfigureABusiness {
         }
         
         
+        // Organization 8: Pharmacy Services (6+ employees)
+        PharmacyOrganization pharmacyOrg = 
+            (PharmacyOrganization) providerEnterprise.createOrganization(
+                "Northeast Regional Pharmacy", Organization.Type.Pharmacy);
+        
+        createEmployeeAndAccount(pharmacyOrg, "Dan Man", "dan.man@nrp.org", 
+                                "(212) 555-0801", "Lead Pharmacist", new PharmacistRole(), 
+                                "dan.man", "Pharm@2024!");
+        
+        createEmployeeAndAccount(pharmacyOrg, "Al Joe", "al.joe@nrp.org", 
+                                "(212) 555-0802", "Staff Pharmacist", new PharmacistRole(), 
+                                "al.joe", "Pharm@2024!");
+        
+        createEmployeeAndAccount(pharmacyOrg, "Kim Park", "kim.park@nrp.org", 
+                                "(212) 555-0803", "Clinical Pharmacist", new PharmacistRole(), 
+                                "kim.park", "Pharm@2024!");
+        
+        // Generate additional pharmacy staff
+        for (int i = 0; i < 3; i++) {
+            String name = generateName();
+            createEmployeeAndAccount(pharmacyOrg, name, generateEmail(name, "nrp.org"),
+                                    generatePhone(), generateJobTitle("Pharmacist"), 
+                                    new PharmacistRole(), null, null);
+        }
+        
+        
     }
     
     private static void createEmployeeAndAccount(Organization org, String name, String email, 
@@ -560,6 +586,39 @@ public class ConfigureABusiness {
             
             labOrg.getWorkQueue().getWorkRequestList().add(labTest);
         }
+        
+        
+        // 31-35: Prescription Requests (Cross-Organization)
+        Organization pharmacyOrg = providerEnt.getOrganizationDirectory().getOrganizationList().get(4);
+        
+        String[] medications = {"Penicillin", "Gabapentin", "Hydrocodone", "Alprazolam", "Atorvastatin"};
+        String[] dosages = {"250mg", "800mg", "5mg", "1mg", "20mg"};
+        int[] quantities = {30, 120, 15, 60, 90};
+        
+        for (int i = 0; i < 5; i++) {
+            PrescriptionRequest rxRequest = new PrescriptionRequest();
+            
+            rxRequest.setPatientName(generateName());
+            rxRequest.setMedicationName(medications[i]);
+            rxRequest.setDosage(dosages[i]);
+            rxRequest.setQuantity(quantities[i]);
+            rxRequest.setPrescribingDoctor("Dr. Amanda Garcia");
+            rxRequest.setMessage("Prescription for " + medications[i] + " - " + dosages[i]);
+            
+            // Demo prescriptions sent from Hospital Admin (Dr. Amanda Garcia) to Pharmacist (Dan Man)
+            rxRequest.setSender(hospital.getUserAccountDirectory().getUserAccountList().get(0));
+            rxRequest.setReceiver(pharmacyOrg.getUserAccountDirectory().getUserAccountList().get(0));
+            
+            rxRequest.setStatus(i < 3 ? "Pending" : "Fulfilled");
+            
+            if (i >= 3) {
+                rxRequest.setFulfillmentNotes("Prescription filled. Patient provided with dosage instructions.");
+                rxRequest.setResolveDate(getDateInPast(random.nextInt(3) + 1));
+            }
+            
+            pharmacyOrg.getWorkQueue().getWorkRequestList().add(rxRequest);
+        }
+        
         
     }
     
