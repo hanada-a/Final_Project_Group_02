@@ -17,14 +17,11 @@ import javax.swing.JPanel;
 public class LabTechRole extends Role {
 
     public LabTechRole() {
-        // Legacy - RoleType.LabAssistant doesn't exist
-        // this.type = RoleType.LabAssistant;
+        this.type = RoleType.LabTech;
     }
 
     @Override
     public JPanel createWorkArea(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
-        // Legacy - RoleType.LabAssistant doesn't exist
-        // this.type = RoleType.LabAssistant;
         return new LabTechWorkAreaJPanel(userProcessContainer, account, organization, business);
     }
 

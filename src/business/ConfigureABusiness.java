@@ -519,7 +519,8 @@ public class ConfigureABusiness {
         // 16-20: Patient Appointments
         for (int i = 0; i < 5; i++) {
             PatientAppointmentRequest appointment = new PatientAppointmentRequest();
-            appointment.setPatientName(generateName());
+            String patientName = generateName();
+            appointment.setPatientName(patientName);
             appointment.setPatientPhone(generatePhone());
             appointment.setPatientEmail(generateEmail("patient" + i, "email.com"));
             appointment.setVaccine(business.getVaccineDirectory().get(i % 4));
@@ -527,9 +528,9 @@ public class ConfigureABusiness {
             appointment.setPreferredDate(getDateInFuture(random.nextInt(30) + 1));
             appointment.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(0));
             appointment.setReceiver(hospital.getUserAccountDirectory().getUserAccountList().get(0));
-            appointment.setMessage("Patient appointment request");
+            appointment.setMessage(patientName + " - " + (i % 2 == 0 ? "First Dose" : "Second Dose"));
             appointment.setStatus(i < 3 ? "Pending" : "Completed");
-            clinic.getWorkQueue().getWorkRequestList().add(appointment);
+            hospital.getWorkQueue().getWorkRequestList().add(appointment);
         }
         
         // 21-22: Compliance Audits
