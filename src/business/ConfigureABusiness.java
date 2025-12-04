@@ -541,9 +541,9 @@ public class ConfigureABusiness {
             audit.setFindings("Routine compliance check");
             audit.setSender(publicHealth.getUserAccountDirectory().getUserAccountList().get(0));
             audit.setReceiver(hospital.getUserAccountDirectory().getUserAccountList().get(0));
-            audit.setMessage("Scheduled compliance audit");
-            audit.setStatus("Completed");
-            publicHealth.getWorkQueue().getWorkRequestList().add(audit);
+            audit.setMessage(i == 0 ? "Vaccine Storage Compliance Audit" : "Distribution Protocol Compliance Audit");
+            audit.setStatus(i == 0 ? "Pending" : "Completed");
+            hospital.getWorkQueue().getWorkRequestList().add(audit);
         }
         
         // 23-25: Health Data Analysis
