@@ -40,8 +40,11 @@ public class DistributionCoordinatorWorkAreaJPanel extends JPanel {
         // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton approveBtn = new JButton("Approve Request");
+        approveBtn.addActionListener(e -> approveRequest());
         JButton scheduleShipmentBtn = new JButton("Schedule Shipment");
+        scheduleShipmentBtn.addActionListener(e -> scheduleShipment());
         JButton viewInventoryBtn = new JButton("View Vaccine Inventory");
+        viewInventoryBtn.addActionListener(e -> viewInventory());
         
         buttonPanel.add(approveBtn);
         buttonPanel.add(scheduleShipmentBtn);
@@ -67,5 +70,74 @@ public class DistributionCoordinatorWorkAreaJPanel extends JPanel {
                 model.addRow(row);
             }
         }
+    }
+    
+    private void approveRequest() {
+        int selectedRow = requestTable.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, 
+                "Please select a request to approve",
+                "No Selection",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        String currentStatus = (String) model.getValueAt(selectedRow, 4);
+        if ("Approved".equalsIgnoreCase(currentStatus) || "Completed".equalsIgnoreCase(currentStatus)) {
+            JOptionPane.showMessageDialog(this,
+                "This request has already been approved/completed",
+                "Already Processed",
+                JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        // Update status in the table
+        model.setValueAt("Approved", selectedRow, 4);
+        
+        // Update the actual request object
+        VaccineAllocationRequest request = (VaccineAllocationRequest) organization.getWorkQueue()
+                                              .getWorkRequestList().get(selectedRow);
+        request.setStatus("Approved");
+        
+        JOptionPane.showMessageDialog(this,
+            "Vaccine allocation request approved successfully!\n" +
+            "Vaccine: " + model.getValueAt(selectedRow, 1) + "\n" +
+            "Quantity: " + model.getValueAt(selectedRow, 2),
+            "Request Approved",
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void scheduleShipment() {
+        int selectedRow = requestTable.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this,
+                "Please select a request to schedule shipment",
+                "No Selection",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        String vaccine = (String) model.getValueAt(selectedRow, 1);
+        String quantity = String.valueOf(model.getValueAt(selectedRow, 2));
+        
+        JOptionPane.showMessageDialog(this,
+            "Shipment scheduling interface:\n\n" +
+            "Vaccine: " + vaccine + "\n" +
+            "Quantity: " + quantity + " doses\n\n" +
+            "Shipment scheduled for next available delivery window.",
+            "Schedule Shipment",
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void viewInventory() {
+        JOptionPane.showMessageDialog(this,
+            "Current Vaccine Inventory:\n\n" +
+            "COVID-19 mRNA Vaccine: 250,000 doses\n" +
+            "Influenza Vaccine: 180,000 doses\n" +
+            "MMR Vaccine: 95,000 doses\n" +
+            "Hepatitis B Vaccine: 75,000 doses\n\n" +
+            "Total Available: 600,000 doses",
+            "Vaccine Inventory",
+            JOptionPane.INFORMATION_MESSAGE);
     }
 }

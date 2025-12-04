@@ -519,7 +519,7 @@ public class ConfigureABusiness {
             vaccineAlloc.setMessage("Vaccine allocation request");
             vaccineAlloc.setNeededByDate(getDateInFuture(random.nextInt(60) + 10));
             vaccineAlloc.setStatus(i < 3 ? "Pending" : "Completed");
-            providerRegistry.getWorkQueue().getWorkRequestList().add(vaccineAlloc);
+            vaccineDist.getWorkQueue().getWorkRequestList().add(vaccineAlloc);
         }
         
         // 11-15: Vaccine Shipments (Cross-Organization)
