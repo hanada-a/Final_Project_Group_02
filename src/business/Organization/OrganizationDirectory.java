@@ -58,6 +58,11 @@ public class OrganizationDirectory {
             organizationList.add(organization);
         }
         
+        else if (type.getValue().equals(Type.Pharmacy.getValue())){
+            organization = new PharmacyOrganization(type.getValue());
+            organizationList.add(organization);
+        }
+        
         return organization;
     }
 }

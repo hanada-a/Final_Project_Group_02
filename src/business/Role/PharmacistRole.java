@@ -9,6 +9,7 @@ import business.Organization.Organization;
 import business.Organization.PharmacyOrganization;
 import business.UserAccount.UserAccount;
 import javax.swing.JPanel;
+import ui.PharmacistRole.PharmacistWorkAreaJPanel;
 
 /***
  *

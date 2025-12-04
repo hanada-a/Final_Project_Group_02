@@ -78,6 +78,9 @@ public class Enterprise extends Organization {
             case Lab:
                 org = new LabOrganization(orgName);
                 break; 
+            case Pharmacy:
+                org = new PharmacyOrganization(orgName);
+                break;
             default:
                 return null;
         }
