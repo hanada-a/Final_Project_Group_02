@@ -12,11 +12,11 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author raunak
+ * @author sowell.m
  */
-public class LabAssistantRole extends Role {
+public class LabTechRole extends Role {
 
-    public LabAssistantRole() {
+    public LabTechRole() {
         // Legacy - RoleType.LabAssistant doesn't exist
         // this.type = RoleType.LabAssistant;
     }

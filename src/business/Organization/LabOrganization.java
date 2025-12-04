@@ -4,29 +4,30 @@
  */
 package business.Organization;
 
-import business.Role.LabAssistantRole;
+import business.Role.LabTechRole;
 import business.Role.Role;
 import java.util.ArrayList;
 
 /**
- *
- * @author raunak
+ * Health provider Organization offering laboratory services,
+ * including testing and diagnostics
+ * 
+ * @author sowell.m
  */
-public class LabOrganization extends Organization{
+public class LabOrganization extends Organization {
 
-    public LabOrganization() {
-        // Legacy - Type.Lab doesn't exist
-        super("Lab"); // Organization.Type.Lab.getValue()
+    
+    public LabOrganization(String name) {
+        super(name);
     }
 
+    
     @Override
     public ArrayList<Role> getSupportedRole() {
         ArrayList<Role> roles = new ArrayList<>();
-        roles.add(new LabAssistantRole());
+        roles.add(new LabTechRole());
         return roles;
     }
-     
-   
     
     
 }

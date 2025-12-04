@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 /**
  *
  * @author raunak
+ * @author hanada.a
+ * @author sowell.m
  */
 public abstract class Role {
 
@@ -24,7 +26,8 @@ public abstract class Role {
         ProviderCoordinator("Provider Coordinator"),
         HospitalAdmin("Hospital Administrator"),
         ClinicManager("Clinic Manager"),
-        NursePractitioner("Nurse Practitioner");
+        NursePractitioner("Nurse Practitioner"),
+        LabTech("Lab Technician");
 
         private String value;
 
