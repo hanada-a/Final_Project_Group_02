@@ -34,7 +34,8 @@ public abstract class Organization {
         ProviderRegistry("Healthcare Provider Registry"),
         Hospital("Regional Hospital"),
         Clinic("Community Clinic"),
-        Lab("Laboratory Services");
+        Lab("Laboratory Services"),
+        Pharmacy("Pharmacy Services");
         
         private String value;
         

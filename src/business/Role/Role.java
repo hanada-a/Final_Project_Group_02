@@ -27,7 +27,8 @@ public abstract class Role {
         HospitalAdmin("Hospital Administrator"),
         ClinicManager("Clinic Manager"),
         NursePractitioner("Nurse Practitioner"),
-        LabTech("Lab Technician");
+        LabTech("Lab Technician"),
+        Pharmacist("Pharmacist");
 
         private String value;
 
