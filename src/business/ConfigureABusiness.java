@@ -575,6 +575,24 @@ public class ConfigureABusiness {
             clinic.getWorkQueue().getWorkRequestList().add(vaccination);
         }
         
+        // Nurse disease case reports for susan.taylor
+        for (int i = 0; i < 5; i++) {
+            DiseaseReportRequest nurseReport = new DiseaseReportRequest();
+            String patientName = generateName();
+            Disease disease = business.getDiseaseDirectory().get(i % 4);
+            int caseCount = 1; // Individual patient reports
+            nurseReport.setDisease(disease);
+            nurseReport.setCaseCount(caseCount);
+            nurseReport.setLocation("Clinic - Brooklyn, NY");
+            nurseReport.setPatientDemographics("Age " + (random.nextInt(60) + 10) + ", " + (i % 2 == 0 ? "Male" : "Female"));
+            nurseReport.setOnsetDate(getDateInPast(random.nextInt(7) + 1));
+            nurseReport.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(0));
+            nurseReport.setReceiver(publicHealth.getUserAccountDirectory().getUserAccountList().get(0));
+            nurseReport.setMessage("Patient: " + patientName + ", Disease: " + disease.getName() + ", Symptoms observed at clinic");
+            nurseReport.setStatus(i < 2 ? "Pending" : "Reported");
+            clinic.getWorkQueue().getWorkRequestList().add(nurseReport);
+        }
+        
         // 21-22: Compliance Audits
         for (int i = 0; i < 2; i++) {
             ComplianceAuditRequest audit = new ComplianceAuditRequest();
