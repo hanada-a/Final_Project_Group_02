@@ -484,7 +484,7 @@ public class ConfigureABusiness {
             diseaseReport.setReceiver(publicHealth.getUserAccountDirectory().getUserAccountList().get(0));
             diseaseReport.setMessage("Disease: " + disease.getName() + ", Cases: " + caseCount);
             diseaseReport.setStatus(i < 3 ? "Pending" : "Completed");
-            clinic.getWorkQueue().getWorkRequestList().add(diseaseReport);
+            publicHealth.getWorkQueue().getWorkRequestList().add(diseaseReport);
         }
         
         // 6-10: Vaccine Allocations (Cross-Enterprise)
@@ -517,7 +517,7 @@ public class ConfigureABusiness {
             shipment.setMessage(vaccine.getName() + " - Qty: " + quantity + " - " + (i % 2 == 0 ? "Urgent shipment" : "Routine resupply"));
             shipment.setUrgentDelivery(i % 2 == 0);
             shipment.setStatus(i < 2 ? "Pending" : "Completed");
-            clinic.getWorkQueue().getWorkRequestList().add(shipment);
+            providerRegistry.getWorkQueue().getWorkRequestList().add(shipment);
         }
         
         // 16-20: Patient Appointments (Hospital)
@@ -593,7 +593,7 @@ public class ConfigureABusiness {
             clinic.getWorkQueue().getWorkRequestList().add(nurseReport);
         }
         
-        // 21-22: Compliance Audits
+        // 21-22: Compliance Audits (Hospital submissions to Public Health)
         for (int i = 0; i < 2; i++) {
             ComplianceAuditRequest audit = new ComplianceAuditRequest();
             audit.setAuditType(i == 0 ? "Vaccine Storage" : "Distribution Protocol");
@@ -604,6 +604,22 @@ public class ConfigureABusiness {
             audit.setMessage(i == 0 ? "Vaccine Storage Compliance Audit" : "Distribution Protocol Compliance Audit");
             audit.setStatus(i == 0 ? "Pending" : "Completed");
             hospital.getWorkQueue().getWorkRequestList().add(audit);
+        }
+        
+        // Provider compliance reports for Public Health Officer review
+        String[] auditTypes = {"Vaccine Storage Compliance", "Distribution Protocol", "Immunization Reporting", "Safety Standards"};
+        for (int i = 0; i < 4; i++) {
+            ComplianceAuditRequest providerAudit = new ComplianceAuditRequest();
+            providerAudit.setAuditType(auditTypes[i % auditTypes.length]);
+            providerAudit.setComplianceScore(String.valueOf(random.nextInt(20) + 75));
+            providerAudit.setFindings(i % 2 == 0 ? "All standards met" : "Minor improvements needed");
+            providerAudit.setSender(i % 2 == 0 ? 
+                hospital.getUserAccountDirectory().getUserAccountList().get(0) : 
+                clinic.getUserAccountDirectory().getUserAccountList().get(0));
+            providerAudit.setReceiver(publicHealth.getUserAccountDirectory().getUserAccountList().get(0));
+            providerAudit.setMessage("Compliance audit: " + auditTypes[i % auditTypes.length]);
+            providerAudit.setStatus(i < 2 ? "Pending" : "Completed");
+            publicHealth.getWorkQueue().getWorkRequestList().add(providerAudit);
         }
         
         // 23-25: Health Data Analysis
