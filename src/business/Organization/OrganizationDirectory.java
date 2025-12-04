@@ -25,17 +25,32 @@ public class OrganizationDirectory {
     
     public Organization createOrganization(Type type){
         Organization organization = null;
-        // Legacy - Type.Doctor and Type.Lab don't exist
-        // if (type.getValue().equals(Type.Doctor.getValue())){
-        if (false) {
-            organization = new DoctorOrganization();
+        
+        if (type.getValue().equals(Type.DiseaseSurveillance.getValue())){
+            organization = new DiseaseSurveillanceOrganization(type.getValue());
             organizationList.add(organization);
         }
-        // else if (type.getValue().equals(Type.Lab.getValue())){
-        else if (false) {
-            organization = new LabOrganization();
+        else if (type.getValue().equals(Type.VaccineDistribution.getValue())){
+            organization = new VaccineDistributionOrganization(type.getValue());
             organizationList.add(organization);
         }
+        else if (type.getValue().equals(Type.PublicHealthServices.getValue())){
+            organization = new PublicHealthServicesOrganization(type.getValue());
+            organizationList.add(organization);
+        }
+        else if (type.getValue().equals(Type.ProviderRegistry.getValue())){
+            organization = new ProviderRegistryOrganization(type.getValue());
+            organizationList.add(organization);
+        }
+        else if (type.getValue().equals(Type.Hospital.getValue())){
+            organization = new HospitalOrganization(type.getValue());
+            organizationList.add(organization);
+        }
+        else if (type.getValue().equals(Type.Clinic.getValue())){
+            organization = new ClinicOrganization(type.getValue());
+            organizationList.add(organization);
+        }
+        
         return organization;
     }
 }

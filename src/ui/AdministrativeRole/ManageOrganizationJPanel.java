@@ -188,8 +188,62 @@ public class ManageOrganizationJPanel extends javax.swing.JPanel {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
 
         Type type = (Type) cmbOrganizations.getSelectedItem();
-        directory.createOrganization(type);
-        populateTable();
+        
+        if (type == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Please select an organization type", 
+                "Warning", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Ask user which enterprise to add organization to
+        java.util.ArrayList<String> enterpriseNames = new java.util.ArrayList<>();
+        java.util.HashMap<String, business.Enterprise> enterpriseMap = new java.util.HashMap<>();
+        
+        for (business.Network network : ecoSystem.getNetworkList()) {
+            for (business.Enterprise enterprise : network.getEnterpriseList()) {
+                String displayName = enterprise.getName() + " (" + enterprise.getEnterpriseType() + ")";
+                enterpriseNames.add(displayName);
+                enterpriseMap.put(displayName, enterprise);
+            }
+        }
+        
+        if (enterpriseNames.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "No enterprises found. Please create an enterprise first.", 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        String selectedEnterprise = (String) javax.swing.JOptionPane.showInputDialog(
+            this,
+            "Select Enterprise to add organization to:",
+            "Select Enterprise",
+            javax.swing.JOptionPane.QUESTION_MESSAGE,
+            null,
+            enterpriseNames.toArray(),
+            enterpriseNames.get(0)
+        );
+        
+        if (selectedEnterprise != null) {
+            business.Enterprise enterprise = enterpriseMap.get(selectedEnterprise);
+            Organization newOrg = enterprise.getOrganizationDirectory().createOrganization(type);
+            
+            if (newOrg != null) {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                    "Organization created successfully in " + enterprise.getName(), 
+                    "Success", 
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                populateTable();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                    "Failed to create organization", 
+                    "Error", 
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
