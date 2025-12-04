@@ -135,7 +135,7 @@ public class SchedulePatientAppointmentsJPanel extends JPanel {
     private void loadAppointments() {
         tableModel.setRowCount(0);
         
-        for (Object obj : account.getWorkQueue().getWorkRequestList()) {
+        for (Object obj : organization.getWorkQueue().getWorkRequestList()) {
             if (obj instanceof PatientAppointmentRequest) {
                 PatientAppointmentRequest request = (PatientAppointmentRequest) obj;
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");

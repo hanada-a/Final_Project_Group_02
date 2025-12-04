@@ -518,7 +518,7 @@ public class ConfigureABusiness {
             clinic.getWorkQueue().getWorkRequestList().add(shipment);
         }
         
-        // 16-20: Patient Appointments
+        // 16-20: Patient Appointments (Hospital)
         for (int i = 0; i < 5; i++) {
             PatientAppointmentRequest appointment = new PatientAppointmentRequest();
             String patientName = generateName();
@@ -533,6 +533,25 @@ public class ConfigureABusiness {
             appointment.setMessage(patientName + " - " + (i % 2 == 0 ? "First Dose" : "Second Dose"));
             appointment.setStatus(i < 3 ? "Pending" : "Completed");
             hospital.getWorkQueue().getWorkRequestList().add(appointment);
+        }
+        
+        // 16b-20b: Clinic Patient Appointments
+        String[] serviceTypes = {"COVID-19 Vaccination", "Flu Shot", "General Consultation", "Disease Screening", "Follow-up Visit"};
+        for (int i = 0; i < 5; i++) {
+            PatientAppointmentRequest appointment = new PatientAppointmentRequest();
+            String patientName = generateName();
+            String service = serviceTypes[i % serviceTypes.length];
+            appointment.setPatientName(patientName);
+            appointment.setPatientPhone(generatePhone());
+            appointment.setPatientEmail(generateEmail("clinicpatient" + i, "email.com"));
+            appointment.setVaccine(business.getVaccineDirectory().get(i % 4));
+            appointment.setAppointmentType(service);
+            appointment.setPreferredDate(getDateInFuture(random.nextInt(30) + 1));
+            appointment.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(0));
+            appointment.setReceiver(clinic.getUserAccountDirectory().getUserAccountList().get(0));
+            appointment.setMessage(patientName + " - " + service);
+            appointment.setStatus(i < 3 ? "Scheduled" : "Completed");
+            clinic.getWorkQueue().getWorkRequestList().add(appointment);
         }
         
         // 21-22: Compliance Audits
