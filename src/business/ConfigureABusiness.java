@@ -504,13 +504,15 @@ public class ConfigureABusiness {
         // 11-15: Vaccine Shipments (Cross-Organization)
         for (int i = 0; i < 5; i++) {
             VaccineShipmentRequest shipment = new VaccineShipmentRequest();
-            shipment.setVaccine(business.getVaccineDirectory().get(i % 4));
-            shipment.setQuantity((random.nextInt(5) + 1) * 500);
+            Vaccine vaccine = business.getVaccineDirectory().get(i % 4);
+            int quantity = (random.nextInt(5) + 1) * 500;
+            shipment.setVaccine(vaccine);
+            shipment.setQuantity(quantity);
             shipment.setShippingAddress("Brooklyn Community Health Clinic, NY 11201");
             shipment.setRequestedDeliveryDate(getDateInFuture(random.nextInt(14) + 3));
             shipment.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(0));
             shipment.setReceiver(providerRegistry.getUserAccountDirectory().getUserAccountList().get(0));
-            shipment.setMessage(i % 2 == 0 ? "Urgent shipment" : "Routine resupply");
+            shipment.setMessage(vaccine.getName() + " - Qty: " + quantity + " - " + (i % 2 == 0 ? "Urgent shipment" : "Routine resupply"));
             shipment.setUrgentDelivery(i % 2 == 0);
             shipment.setStatus(i < 2 ? "Pending" : "Completed");
             clinic.getWorkQueue().getWorkRequestList().add(shipment);

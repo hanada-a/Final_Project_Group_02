@@ -135,7 +135,7 @@ public class RequestVaccineShipmentJPanel extends JPanel {
         tableModel.setRowCount(0);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         
-        for (Object obj : account.getWorkQueue().getWorkRequestList()) {
+        for (Object obj : organization.getWorkQueue().getWorkRequestList()) {
             if (obj instanceof VaccineShipmentRequest) {
                 VaccineShipmentRequest request = (VaccineShipmentRequest) obj;
                 tableModel.addRow(new Object[]{
