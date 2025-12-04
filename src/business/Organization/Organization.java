@@ -13,6 +13,8 @@ import java.util.ArrayList;
 /**
  *
  * @author raunak
+ * @author Akira Hanada
+ * @author Maxwell Sowell
  */
 public abstract class Organization {
 
@@ -31,7 +33,9 @@ public abstract class Organization {
         PublicHealthServices("Public Health Services"),
         ProviderRegistry("Healthcare Provider Registry"),
         Hospital("Regional Hospital"),
-        Clinic("Community Clinic");
+        Clinic("Community Clinic"),
+        Lab("Laboratory Services"),
+        Pharmacy("Pharmacy Services");
         
         private String value;
         

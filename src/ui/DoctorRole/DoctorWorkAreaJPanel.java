@@ -7,7 +7,7 @@ package ui.DoctorRole;
 import business.Business;
 import business.Organization.DoctorOrganization;
 import business.UserAccount.UserAccount;
-import business.WorkQueue.LabTestWorkRequest;
+import business.WorkQueue.LabTestRequest;
 import business.WorkQueue.WorkRequest;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
@@ -46,7 +46,7 @@ public class DoctorWorkAreaJPanel extends javax.swing.JPanel {
             row[0] = request.getMessage();
             row[1] = request.getReceiver();
             row[2] = request.getStatus();
-            String result = ((LabTestWorkRequest) request).getTestResult();
+            String result = ((LabTestRequest) request).getTestResult();
             row[3] = result == null ? "Waiting" : result;
             
             model.addRow(row);

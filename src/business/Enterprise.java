@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 /**
  * Represents an Enterprise that contains multiple Organizations
+ * 
+ * @author Akira Hanada
+ * @author Maxwell Sowell
  */
 public class Enterprise extends Organization {
     
@@ -71,6 +74,12 @@ public class Enterprise extends Organization {
                 break;
             case Clinic:
                 org = new ClinicOrganization(orgName);
+                break;
+            case Lab:
+                org = new LabOrganization(orgName);
+                break; 
+            case Pharmacy:
+                org = new PharmacyOrganization(orgName);
                 break;
             default:
                 return null;

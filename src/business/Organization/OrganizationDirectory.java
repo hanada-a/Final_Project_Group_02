@@ -10,6 +10,8 @@ import java.util.ArrayList;
 /**
  *
  * @author raunak
+ * @author Akira Hanada
+ * @author Maxwell Sowell
  */
 public class OrganizationDirectory {
     
@@ -48,6 +50,16 @@ public class OrganizationDirectory {
         }
         else if (type.getValue().equals(Type.Clinic.getValue())){
             organization = new ClinicOrganization(type.getValue());
+            organizationList.add(organization);
+        }
+        
+        else if (type.getValue().equals(Type.Lab.getValue())){
+            organization = new LabOrganization(type.getValue());
+            organizationList.add(organization);
+        }
+        
+        else if (type.getValue().equals(Type.Pharmacy.getValue())){
+            organization = new PharmacyOrganization(type.getValue());
             organizationList.add(organization);
         }
         
