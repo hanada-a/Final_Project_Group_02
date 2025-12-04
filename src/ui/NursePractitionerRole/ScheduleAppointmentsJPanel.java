@@ -127,14 +127,19 @@ public class ScheduleAppointmentsJPanel extends JPanel {
     private void loadAppointments() {
         tableModel.setRowCount(0);
         
-        for (Object obj : account.getWorkQueue().getWorkRequestList()) {
+        for (Object obj : organization.getWorkQueue().getWorkRequestList()) {
             if (obj instanceof PatientAppointmentRequest) {
                 PatientAppointmentRequest request = (PatientAppointmentRequest) obj;
+                String message = request.getMessage() != null ? request.getMessage() : "";
+                String patient = message.contains(" - ") ? message.split(" - ")[0] : "N/A";
+                String type = request.getAppointmentType() != null ? request.getAppointmentType() : 
+                    (message.contains(" - ") && message.split(" - ").length > 1 ? message.split(" - ")[1] : "Appointment");
+                
                 tableModel.addRow(new Object[]{
                     request.getRequestDate() != null ? new SimpleDateFormat("MM/dd/yyyy").format(request.getRequestDate()) : "N/A",
                     "09:00",
-                    request.getMessage() != null ? request.getMessage() : "N/A",
-                    "Appointment",
+                    patient,
+                    type,
                     request.getStatus()
                 });
             }
