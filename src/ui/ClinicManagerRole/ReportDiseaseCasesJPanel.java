@@ -131,7 +131,7 @@ public class ReportDiseaseCasesJPanel extends JPanel {
         tableModel.setRowCount(0);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         
-        for (Object obj : account.getWorkQueue().getWorkRequestList()) {
+        for (Object obj : organization.getWorkQueue().getWorkRequestList()) {
             if (obj instanceof DiseaseReportRequest) {
                 DiseaseReportRequest request = (DiseaseReportRequest) obj;
                 String message = request.getMessage() != null ? request.getMessage() : "";

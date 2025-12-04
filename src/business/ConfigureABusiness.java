@@ -473,14 +473,16 @@ public class ConfigureABusiness {
         // 1-5: Disease Reports (Cross-Enterprise)
         for (int i = 0; i < 5; i++) {
             DiseaseReportRequest diseaseReport = new DiseaseReportRequest();
-            diseaseReport.setDisease(business.getDiseaseDirectory().get(i % 4));
-            diseaseReport.setCaseCount(random.nextInt(10) + 1);
+            Disease disease = business.getDiseaseDirectory().get(i % 4);
+            int caseCount = random.nextInt(10) + 1;
+            diseaseReport.setDisease(disease);
+            diseaseReport.setCaseCount(caseCount);
             diseaseReport.setLocation(i % 2 == 0 ? "Brooklyn, NY" : "Manhattan, NY");
             diseaseReport.setPatientDemographics("Adults 25-65, Mixed gender");
             diseaseReport.setOnsetDate(getDateInPast(random.nextInt(30) + 1));
             diseaseReport.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(0));
             diseaseReport.setReceiver(publicHealth.getUserAccountDirectory().getUserAccountList().get(0));
-            diseaseReport.setMessage("Reporting " + diseaseReport.getCaseCount() + " new cases");
+            diseaseReport.setMessage("Disease: " + disease.getName() + ", Cases: " + caseCount);
             diseaseReport.setStatus(i < 3 ? "Pending" : "Completed");
             clinic.getWorkQueue().getWorkRequestList().add(diseaseReport);
         }
@@ -552,6 +554,25 @@ public class ConfigureABusiness {
             appointment.setMessage(patientName + " - " + service);
             appointment.setStatus(i < 3 ? "Scheduled" : "Completed");
             clinic.getWorkQueue().getWorkRequestList().add(appointment);
+        }
+        
+        // Nurse vaccination records for susan.taylor
+        for (int i = 0; i < 6; i++) {
+            PatientAppointmentRequest vaccination = new PatientAppointmentRequest();
+            String patientName = generateName();
+            Vaccine vaccine = business.getVaccineDirectory().get(i % 4);
+            String doseType = i % 2 == 0 ? "First Dose" : "Second Dose";
+            vaccination.setPatientName(patientName);
+            vaccination.setPatientPhone(generatePhone());
+            vaccination.setPatientEmail(generateEmail("vacpatient" + i, "email.com"));
+            vaccination.setVaccine(vaccine);
+            vaccination.setAppointmentType(doseType);
+            vaccination.setPreferredDate(getDateInPast(random.nextInt(30) + 1));
+            vaccination.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(0));
+            vaccination.setReceiver(clinic.getUserAccountDirectory().getUserAccountList().get(0));
+            vaccination.setMessage(patientName + " - " + vaccine.getName() + " - " + doseType);
+            vaccination.setStatus("Completed");
+            clinic.getWorkQueue().getWorkRequestList().add(vaccination);
         }
         
         // 21-22: Compliance Audits

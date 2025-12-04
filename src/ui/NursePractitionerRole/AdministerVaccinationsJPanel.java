@@ -4,7 +4,7 @@ import business.Business;
 import business.Domain.Vaccine;
 import business.Organization.Organization;
 import business.UserAccount.UserAccount;
-import business.WorkQueue.VaccineShipmentRequest;
+import business.WorkQueue.PatientAppointmentRequest;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import javax.swing.*;
@@ -123,19 +123,22 @@ public class AdministerVaccinationsJPanel extends JPanel {
         tableModel.setRowCount(0);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         
-        // Show recent vaccination records from work queue
-        for (Object obj : account.getWorkQueue().getWorkRequestList()) {
-            if (obj instanceof VaccineShipmentRequest) {
-                VaccineShipmentRequest request = (VaccineShipmentRequest) obj;
-                if ("Completed".equals(request.getStatus())) {
-                    tableModel.addRow(new Object[]{
-                        sdf.format(request.getResolveDate()),
-                        request.getMessage() != null ? request.getMessage() : "N/A",
-                        "Vaccination Completed",
-                        "N/A",
-                        account.getEmployee().getName()
-                    });
-                }
+        // Show recent vaccination records from organization work queue
+        for (Object obj : organization.getWorkQueue().getWorkRequestList()) {
+            if (obj instanceof PatientAppointmentRequest) {
+                PatientAppointmentRequest request = (PatientAppointmentRequest) obj;
+                String message = request.getMessage() != null ? request.getMessage() : "";
+                String patient = message.contains(" - ") ? message.split(" - ")[0] : "N/A";
+                String vaccineInfo = message.contains(" - ") && message.split(" - ").length > 1 ? 
+                    message.split(" - ")[1] : "N/A";
+                
+                tableModel.addRow(new Object[]{
+                    sdf.format(request.getRequestDate()),
+                    patient,
+                    request.getVaccine() != null ? request.getVaccine().getName() : vaccineInfo,
+                    request.getAppointmentType() != null ? request.getAppointmentType() : "Dose 1",
+                    request.getReceiver() != null ? request.getReceiver().getEmployee().getName() : account.getEmployee().getName()
+                });
             }
         }
     }
