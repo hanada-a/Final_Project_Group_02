@@ -16,8 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * Work area for lab technicians to process test requests
+ * 
  * @author raunak
+ * @author Maxwell Sowell
  */
 public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
 
@@ -26,9 +28,7 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
     private UserAccount userAccount;
     private LabOrganization labOrganization;
 
-    /**
-     * Creates new form LabAssistantWorkAreaJPanel
-     */
+
     public LabTechWorkAreaJPanel(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
         initComponents();
 
@@ -40,19 +40,27 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
         populateTable();
     }
 
+    
     public void populateTable() {
         DefaultTableModel model = (DefaultTableModel) tblWorkRequests.getModel();
-
         model.setRowCount(0);
 
         for (WorkRequest request : labOrganization.getWorkQueue().getWorkRequestList()) {
-            Object[] row = new Object[4];
-            row[0] = request;
-            row[1] = request.getSender().getEmployee().getName();
-            row[2] = request.getReceiver() == null ? null : request.getReceiver().getEmployee().getName();
-            row[3] = request.getStatus();
+            if (request instanceof LabTestRequest && request.getReceiver() != null && request.getReceiver().equals(userAccount)) {
+                LabTestRequest labRequest = (LabTestRequest) request;
+                
+                Object[] row = new Object[7];
+                row[0] = labRequest;
+                row[1] = labRequest.getTestType() != null ? labRequest.getTestType() : "General Test";
+                row[2] = labRequest.getPatientName() != null ? labRequest.getPatientName() : "Unknown";
+                row[3] = labRequest.getUrgencyLevel() != null ? labRequest.getUrgencyLevel() : "Normal";
+                row[4] = labRequest.getStatus() != null ? labRequest.getStatus() : "Pending";
+                row[5] = labRequest.getTestResult() != null ? labRequest.getTestResult() : "-";
+                row[6] = labRequest.getRequestDate();
 
             model.addRow(row);
+            
+            }
         }
     }
 
@@ -76,20 +84,20 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
 
         tblWorkRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Message", "Sender", "Receiver", "Status"
+                "Request ID", "Test Type", "Patient Info", "Priority", "Status", "Result Notes", "Request Date"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, true, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -101,12 +109,6 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(tblWorkRequests);
-        if (tblWorkRequests.getColumnModel().getColumnCount() > 0) {
-            tblWorkRequests.getColumnModel().getColumn(0).setResizable(false);
-            tblWorkRequests.getColumnModel().getColumn(1).setResizable(false);
-            tblWorkRequests.getColumnModel().getColumn(2).setResizable(false);
-            tblWorkRequests.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         btnAssign.setText("Assign to me");
         btnAssign.addActionListener(new java.awt.event.ActionListener() {
@@ -130,25 +132,28 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
         });
 
         lblTitle.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        lblTitle.setText("Laboratory Work Area");
+        lblTitle.setText("Lab Technician Work Area - <Name>");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAssign)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnProcess))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblTitle)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRefresh))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(59, 59, 59)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAssign)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnProcess))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblTitle)
+                                .addGap(303, 303, 303)
+                                .addComponent(btnRefresh)))))
                 .addContainerGap(115, Short.MAX_VALUE))
         );
 
