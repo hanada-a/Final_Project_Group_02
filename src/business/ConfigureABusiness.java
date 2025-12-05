@@ -339,6 +339,14 @@ public class ConfigureABusiness {
                                 "(212) 555-0503", "Nurse Practitioner", new NursePractitionerRole(), 
                                 "john.miller", "Hospital@2024!");
         
+        createEmployeeAndAccount(hospital, "Dr. Ray Kim", "ray.kim@nrmc.org", 
+                                "(212) 555-0510", "Vaccine Storage Manager", new VaccineStorageSpecialistRole(), 
+                                "ray.kim", "Cold@2024!");
+        
+        createEmployeeAndAccount(hospital, "Jay Poe", "jay.poe@nrmc.org", 
+                                "(212) 555-0511", "Cold Chain Specialist", new VaccineStorageSpecialistRole(), 
+                                "jay.poe", "Cold@2024!");
+        
         // Generate additional hospital staff
         for (int i = 0; i < 5; i++) {
             String name = "Dr. " + generateName();
@@ -429,6 +437,10 @@ public class ConfigureABusiness {
         createEmployeeAndAccount(pharmacyOrg, "Kim Park", "kim.park@nrp.org", 
                                 "(212) 555-0803", "Clinical Pharmacist", new PharmacistRole(), 
                                 "kim.park", "Pharm@2024!");
+        
+        createEmployeeAndAccount(pharmacyOrg, "Mae Toh", "mae.toh@nrp.org", 
+                                "(212) 555-0810", "Vaccine Storage Manager", new VaccineStorageSpecialistRole(), 
+                                "mae.toh", "Cold@2024!");
         
         // Generate additional pharmacy staff
         for (int i = 0; i < 3; i++) {
@@ -661,13 +673,13 @@ public class ConfigureABusiness {
         
         for (int i = 0; i < 5; i++) {
             LabTestRequest labTest = new LabTestRequest();
+            String[] testTypes = {"COVID-19 PCR Test", "COVID-19 Antibody Test", "Influenza Test", "Blood Culture", "Complete Blood Count"};
             
-            String[] testTypes = {"COVID-19 PCR Test", "COVID-19 Antibody Test", "Influenza Test", 
-                    "Blood Culture", "Complete Blood Count"};
             labTest.setTestType(testTypes[i % testTypes.length]);
-            
+            labTest.setPatientName(generateName());
             labTest.setUrgencyLevel(i < 2 ? "URGENT" : "Normal");
             labTest.setMessage("Patient ID: PT" + (10000 + i) + " - " + testTypes[i % testTypes.length]);
+            
             
             // Demo lab tests requested by Clinic Nurse Susan Taylor from John Bob
             labTest.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(1));
@@ -713,6 +725,46 @@ public class ConfigureABusiness {
             }
             
             pharmacyOrg.getWorkQueue().getWorkRequestList().add(rxRequest);
+        }
+        
+        
+        // 36-38: Cold Chain Failure Requests (Cross-Enterprise: Hospital -> State)
+        for (int i = 0; i < 4; i++) {
+            ColdChainFailureRequest ccRequest = new ColdChainFailureRequest();
+            
+            ccRequest.setAffectedVaccine(business.getVaccineDirectory().get(i % 5));
+            ccRequest.setAffectedQuantity((i + 1) * 100);
+            String[] failureTypes = {"Temperature Excursion", "Equipment Malfunction", "Power Failure", "Human Error"};
+            ccRequest.setFailureType(failureTypes[i]);
+            ccRequest.setTemperatureRange(i == 0 ? "10-15°C" : (i == 1 ? "Room Temp" : "8-12°C"));
+            ccRequest.setDurationOfExposure(i == 0 ? "3 hours" : (i == 1 ? "8 hours" : "1 hour"));
+            ccRequest.setCorrectiveAction("Vaccines quarantined. Awaiting disposal/replacement guidance.");
+            ccRequest.setReplacementStatus(i < 2 ? "Pending" : "Approved");
+            ccRequest.setMessage("Cold Chain Failure: " + ccRequest.getAffectedVaccine().getName() + " - " + failureTypes[i]);
+            
+            
+            // Reports sent from Hospital Storage Specialist (ray.kim) to State Provider Coordinator (patricia.davis)
+            UserAccount storageSpecialistAccount = null;
+            for (UserAccount ua : hospital.getUserAccountDirectory().getUserAccountList()) {
+                if (ua.getRole() instanceof VaccineStorageSpecialistRole) {
+                    storageSpecialistAccount = ua;
+                    break;
+                }
+            }
+            
+            if (storageSpecialistAccount != null) {
+                ccRequest.setSender(storageSpecialistAccount);
+                ccRequest.setReceiver(providerRegistry.getUserAccountDirectory().getUserAccountList().get(0));
+                
+                ccRequest.setStatus(i < 2 ? "Pending Review" : "Under Investigation");
+                
+                if (i == 2) {
+                    ccRequest.setResolveDate(getDateInPast(1));
+                }
+                
+                hospital.getWorkQueue().getWorkRequestList().add(ccRequest);
+                providerRegistry.getWorkQueue().getWorkRequestList().add(ccRequest);
+            }
         }
         
         

@@ -12,6 +12,7 @@ package business.WorkQueue;
 public class LabTestRequest extends WorkRequest{
     
     
+    private String patientName; // TODO (but we won't have time) implement full Patient and Person classes across the program
     private String testType;
     private String urgencyLevel;
     private String testResult;
@@ -24,6 +25,14 @@ public class LabTestRequest extends WorkRequest{
     }
 
     
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
     public String getTestType() {
         return testType;
     }
@@ -48,5 +57,10 @@ public class LabTestRequest extends WorkRequest{
         this.testResult = testResult;
     }
     
+    
+    @Override
+    public String toString() {
+        return getMessage();
+    }
     
 }

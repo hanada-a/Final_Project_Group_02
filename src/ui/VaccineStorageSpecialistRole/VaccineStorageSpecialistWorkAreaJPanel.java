@@ -58,7 +58,7 @@ public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
             Object[] row = new Object[5];
             row[0] = vaccine.getName();
             row[1] = vaccine.getManufacturer();
-            row[2] = 0; // Possible TODO-- track stored vaccine inventory
+            row[2] = 1000; // TODO given more time-- track stored vaccine inventory
             row[3] = vaccine.getExpirationDate() != null ? sdf.format(vaccine.getExpirationDate()) : "N/A";
             row[4] = vaccine.getStorageTemperature() != null ? vaccine.getStorageTemperature() : "N/A";
             
@@ -79,12 +79,13 @@ public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
                     && request.getSender().equals(userAccount)) {
                 ColdChainFailureRequest ccRequest = (ColdChainFailureRequest) request;
                 
-                Object[] row = new Object[5];
+                Object[] row = new Object[6];
                 row[0] = sdf.format(ccRequest.getRequestDate());
                 row[1] = ccRequest.getAffectedVaccine() != null ? ccRequest.getAffectedVaccine().getName() : "N/A";
                 row[2] = ccRequest.getAffectedQuantity();
                 row[3] = ccRequest.getFailureType() != null ? ccRequest.getFailureType() : "N/A";
                 row[4] = ccRequest.getStatus() != null ? ccRequest.getStatus() : "Pending";
+                row[5] = ccRequest.getReplacementStatus() != null ? ccRequest.getReplacementStatus() : "Pending";
                 
                 model.addRow(row);
             }
@@ -163,20 +164,20 @@ public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
 
         tblReports.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Report Date", "Vaccine", "Affected Qty", "Failure Type", "Status"
+                "Report Date", "Vaccine", "Affected Qty", "Failure Type", "Report Status", "Replacement Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {

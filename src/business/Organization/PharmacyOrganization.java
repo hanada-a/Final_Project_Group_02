@@ -6,6 +6,7 @@ package business.Organization;
 
 import business.Role.PharmacistRole;
 import business.Role.Role;
+import business.Role.VaccineStorageSpecialistRole;
 import java.util.ArrayList;
 
 /***
@@ -26,6 +27,7 @@ public class PharmacyOrganization extends Organization {
     public ArrayList<Role> getSupportedRole() {
         ArrayList<Role> roles = new ArrayList<>();
         roles.add(new PharmacistRole());
+        roles.add(new VaccineStorageSpecialistRole());
         return roles;
     }  
 }

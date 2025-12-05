@@ -54,14 +54,15 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
                     && request.getReceiver().equals(userAccount)) {
                 PrescriptionRequest rxRequest = (PrescriptionRequest) request;
                 
-                Object[] row = new Object[7];
+                Object[] row = new Object[8];
                 row[0] = rxRequest.getPatientName() != null ? rxRequest.getPatientName() : "Unknown";
                 row[1] = rxRequest.getMedicationName() != null ? rxRequest.getMedicationName() : "N/A";
                 row[2] = rxRequest.getDosage() != null ? rxRequest.getDosage() : "N/A";
                 row[3] = rxRequest.getQuantity();
                 row[4] = rxRequest.getPrescribingDoctor() != null ? rxRequest.getPrescribingDoctor() : "N/A";
                 row[5] = rxRequest.getStatus() != null ? rxRequest.getStatus() : "Pending";
-                row[6] = rxRequest.getRequestDate();
+                row[6] = rxRequest.getFulfillmentNotes() != null ? rxRequest.getFulfillmentNotes() : "-";
+                row[7] = rxRequest.getRequestDate();
                 
                 model.addRow(row);
             }
@@ -90,20 +91,20 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
 
         tblWorkRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Patient", "Medication", "Dosage", "Quantity", "Doctor", "Status", "Date"
+                "Patient", "Medication", "Dosage", "Quantity", "Doctor", "Status", "Notes", "Date"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
