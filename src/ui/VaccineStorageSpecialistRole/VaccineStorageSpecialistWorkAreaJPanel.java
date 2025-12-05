@@ -4,18 +4,91 @@
  */
 package ui.VaccineStorageSpecialistRole;
 
+import business.Business;
+import business.Domain.Vaccine;
+import business.Organization.Organization;
+import business.UserAccount.UserAccount;
+import business.WorkQueue.ColdChainFailureRequest;
+import business.WorkQueue.WorkRequest;
+import java.awt.CardLayout;
+import java.text.SimpleDateFormat;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
- * @author maxwellsowell
+ * @author Maxwell Sowell
  */
 public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
+    
+    private JPanel userProcessContainer;
+    private UserAccount userAccount;
+    private Organization organization;
+    private Business business;
 
     /**
      * Creates new form VaccineStorageSpecialistWorkAreaJPanel
      */
-    public VaccineStorageSpecialistWorkAreaJPanel() {
+    public VaccineStorageSpecialistWorkAreaJPanel(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
+        this.userProcessContainer = userProcessContainer;
+        this.userAccount = account;
+        this.organization = organization;
+        this.business = business;
+        
         initComponents();
+        
+        
+        lblTitle.setText("Vaccine Storage Specialist Work Area - " + account.getEmployee().getName());
+
+        populateVaccineInventory();
+        populateReports();
+        
     }
+    
+    
+    private void populateVaccineInventory() {
+        DefaultTableModel model = (DefaultTableModel) tblInventory.getModel();
+        model.setRowCount(0);
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        
+        for (Vaccine vaccine : business.getVaccineDirectory()) {
+            Object[] row = new Object[5];
+            row[0] = vaccine.getName();
+            row[1] = vaccine.getManufacturer();
+            row[2] = 0; // Possible TODO-- track stored vaccine inventory
+            row[3] = vaccine.getExpirationDate() != null ? sdf.format(vaccine.getExpirationDate()) : "N/A";
+            row[4] = vaccine.getStorageTemperature() != null ? vaccine.getStorageTemperature() : "N/A";
+            
+            model.addRow(row);
+        }
+    }
+    
+    
+    private void populateReports() {
+        DefaultTableModel model = (DefaultTableModel) tblReports.getModel();
+        model.setRowCount(0);
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        
+        // This specialist's failure reports
+        for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
+            if (request instanceof ColdChainFailureRequest && request.getSender() != null 
+                    && request.getSender().equals(userAccount)) {
+                ColdChainFailureRequest ccRequest = (ColdChainFailureRequest) request;
+                
+                Object[] row = new Object[5];
+                row[0] = sdf.format(ccRequest.getRequestDate());
+                row[1] = ccRequest.getAffectedVaccine() != null ? ccRequest.getAffectedVaccine().getName() : "N/A";
+                row[2] = ccRequest.getAffectedQuantity();
+                row[3] = ccRequest.getFailureType() != null ? ccRequest.getFailureType() : "N/A";
+                row[4] = ccRequest.getStatus() != null ? ccRequest.getStatus() : "Pending";
+                
+                model.addRow(row);
+            }
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -172,7 +245,7 @@ public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-
+        
         userProcessContainer.remove(this);
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.previous(userProcessContainer);
@@ -180,8 +253,10 @@ public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
-
-        populateRequestTable();
+        
+        populateVaccineInventory();
+        populateReports();
+        
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed

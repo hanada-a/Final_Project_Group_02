@@ -8,6 +8,7 @@ import business.Business;
 import business.Organization.Organization;
 import business.UserAccount.UserAccount;
 import javax.swing.JPanel;
+import ui.VaccineStorageSpecialistRole.VaccineStorageSpecialistWorkAreaJPanel;
 
 /**
  * Vaccine cold chain and inventory management role, e.g. as part of a pharmacy/hospital/clinic
