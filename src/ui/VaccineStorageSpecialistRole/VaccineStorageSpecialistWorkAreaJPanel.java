@@ -6,17 +6,21 @@ package ui.VaccineStorageSpecialistRole;
 
 import business.Business;
 import business.Domain.Vaccine;
+import business.Enterprise;
+import business.Network;
 import business.Organization.Organization;
 import business.UserAccount.UserAccount;
 import business.WorkQueue.ColdChainFailureRequest;
 import business.WorkQueue.WorkRequest;
 import java.awt.CardLayout;
 import java.text.SimpleDateFormat;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * Creates Work Area for Vaccine Storage Specialist
+ * 
  * @author Maxwell Sowell
  */
 public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
@@ -26,9 +30,7 @@ public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
     private Organization organization;
     private Business business;
 
-    /**
-     * Creates new form VaccineStorageSpecialistWorkAreaJPanel
-     */
+
     public VaccineStorageSpecialistWorkAreaJPanel(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
         this.userProcessContainer = userProcessContainer;
         this.userAccount = account;
@@ -260,7 +262,99 @@ public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
-        // TODO add your handling code here:
+        
+        // Get failure details
+        String[] failureTypes = {"Temperature Excursion", "Equipment Malfunction", "Power Failure", "Human Error"};
+        String failureType = (String) JOptionPane.showInputDialog(
+                this, "Select failure type:","Report Cold Chain Failure",
+                JOptionPane.QUESTION_MESSAGE,null,failureTypes,failureTypes[0]);
+        if (failureType == null) return;
+        
+        
+        // Select vaccine if any exist
+        if (business.getVaccineDirectory().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No vaccines in system", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        Vaccine[] vaccines = business.getVaccineDirectory().toArray(new Vaccine[0]);
+        Vaccine affectedVaccine = (Vaccine) JOptionPane.showInputDialog(
+                this, "Select affected vaccine:","Report Cold Chain Failure",
+                JOptionPane.QUESTION_MESSAGE, null,vaccines,vaccines[0]);
+        if (affectedVaccine == null) return;
+        
+        
+        // Get affected quantity
+        String qtyStr = JOptionPane.showInputDialog(this, "Enter affected quantity:", "0");
+        if (qtyStr == null) return;
+        
+        int affectedQty;
+        try {
+            affectedQty = Integer.parseInt(qtyStr.trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid quantity", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        
+        String tempRange = JOptionPane.showInputDialog(this, "Temperature range during failure:", "10-15°C");
+        String duration = JOptionPane.showInputDialog(this, "Duration of exposure:", "2 hours");
+        String action = JOptionPane.showInputDialog(this, "Corrective action taken:", "Vaccines quarantined, awaiting disposal guidance");
+        
+        
+        // Find state Provider Coordinator to send report to
+        Organization stateProviderRegistry = null;
+        for (Network network : business.getEcoSystem().getNetworkList()) {
+            for (Enterprise enterprise : network.getEnterpriseList()) {
+                if (enterprise.getName().contains("State Health")) {
+                    for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+                        if (org.getName().contains("Provider Registry")) {
+                            stateProviderRegistry = org;
+                            break;
+                        }
+                    }
+                }
+                if (stateProviderRegistry != null) break;
+            }
+            if (stateProviderRegistry != null) break;
+        }
+        
+        if (stateProviderRegistry == null || stateProviderRegistry.getUserAccountDirectory().getUserAccountList().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "State Provider Registry not found", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        
+        // Create the cold chain failure request
+        ColdChainFailureRequest ccRequest = new ColdChainFailureRequest();
+        ccRequest.setAffectedVaccine(affectedVaccine);
+        ccRequest.setAffectedQuantity(affectedQty);
+        ccRequest.setFailureType(failureType);
+        ccRequest.setTemperatureRange(tempRange != null ? tempRange : "N/A");
+        ccRequest.setDurationOfExposure(duration != null ? duration : "N/A");
+        ccRequest.setCorrectiveAction(action != null ? action : "N/A");
+        ccRequest.setSender(userAccount);
+        ccRequest.setReceiver(stateProviderRegistry.getUserAccountDirectory().getUserAccountList().get(0)); // Just picking the first for our purposes
+        ccRequest.setMessage("Cold Chain Failure: " + affectedVaccine.getName() + " - Qty: " + affectedQty);
+        ccRequest.setStatus("Pending Review");
+        
+        
+        // Add to work queue
+        organization.getWorkQueue().getWorkRequestList().add(ccRequest);
+        stateProviderRegistry.getWorkQueue().getWorkRequestList().add(ccRequest);
+        
+        JOptionPane.showMessageDialog(this,
+                "Cold chain failure successfully reported.\n\n" +
+                "Vaccine: " + affectedVaccine.getName() + "\n" +
+                "Quantity: " + affectedQty + "\n" +
+                "Type: " + failureType + "\n\n" +
+                "State Provider Coordinator notified!",
+                "Report Submitted",JOptionPane.INFORMATION_MESSAGE);
+        
+        
+        // Finally refresh table
+        populateReports();
+        
     }//GEN-LAST:event_btnReportActionPerformed
 
 
