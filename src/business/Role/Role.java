@@ -28,7 +28,8 @@ public abstract class Role {
         ClinicManager("Clinic Manager"),
         NursePractitioner("Nurse Practitioner"),
         LabTech("Lab Technician"),
-        Pharmacist("Pharmacist");
+        Pharmacist("Pharmacist"),
+        VaccineStorageSpecialist("Vaccine Storage Specialist");
 
         private String value;
 
