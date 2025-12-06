@@ -180,32 +180,39 @@ public class RequestVaccineShipmentJPanel extends JPanel {
                 return;
             }
             
-            // Find state health department to send request to
-            Organization targetOrg = null;
+            // Find Healthcare Provider Registry to send request to
+            Organization providerRegistry = null;
             for (Network network : business.getEcoSystem().getNetworkList()) {
                 for (Enterprise enterprise : network.getEnterpriseList()) {
-                    if (enterprise.getName().contains("State")) {
+                    if (enterprise.getName().contains("State Health")) {
                         for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
-                            if (org.getName().contains("Vaccine") || org.getName().contains("Distribution")) {
-                                targetOrg = org;
+                            if (org.getName().contains("Provider Registry") || 
+                                org.getName().contains("Healthcare Provider")) {
+                                providerRegistry = org;
                                 break;
                             }
                         }
+                        if (providerRegistry != null) break;
                     }
                 }
+                if (providerRegistry != null) break;
             }
             
             // Create shipment request
             VaccineShipmentRequest request = new VaccineShipmentRequest();
+            request.setVaccine(vaccine);
+            request.setQuantity(quantity);
             request.setSender(account);
             request.setStatus("Pending");
-            request.setMessage(vaccine.getName() + " - Qty: " + quantity + " doses - Reason: " + reason);
+            request.setMessage(vaccine.getName() + " - Qty: " + quantity + " doses - " + reason);
             
-            account.getWorkQueue().getWorkRequestList().add(request);
+            // Add to sender's queue (clinic)
             organization.getWorkQueue().getWorkRequestList().add(request);
             
-            if (targetOrg != null) {
-                targetOrg.getWorkQueue().getWorkRequestList().add(request);
+            // Add to receiver's queue (provider registry) where patricia.davis can see it
+            if (providerRegistry != null) {
+                request.setReceiver(providerRegistry.getUserAccountDirectory().getUserAccountList().get(0));
+                providerRegistry.getWorkQueue().getWorkRequestList().add(request);
             }
             
             // Update table
