@@ -285,6 +285,11 @@ public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
             return;
         }
         
+        if (affectedQty < 0) {
+            JOptionPane.showMessageDialog(this, "Quantity cannot be negative");
+            return;
+        }
+        
         
         String tempRange = JOptionPane.showInputDialog(this, "Temperature range during failure:", "10-15°C");
         String duration = JOptionPane.showInputDialog(this, "Duration of exposure:", "2 hours");
