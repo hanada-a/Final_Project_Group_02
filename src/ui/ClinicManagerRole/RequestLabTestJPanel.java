@@ -20,6 +20,9 @@ import javax.swing.table.DefaultTableModel;
 /**
  * Panel for clinic manager to request a test from lab services
  * 
+ * Please note that the RequestLabTestJPanel under ui.DoctorRole is old legacy code
+ * (along with DoctorWorkAreaJPanel) and so should not be considered part of this workflow
+ * 
  * @author Maxwell Sowell
  */
 public class RequestLabTestJPanel extends javax.swing.JPanel {
