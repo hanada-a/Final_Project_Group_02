@@ -8,6 +8,9 @@ import javax.swing.*;
 
 /**
  * Work area for Clinic Manager role
+ * 
+ * @author Akira Hanada
+ * @author Maxwell Sowell
  */
 public class ClinicManagerWorkAreaJPanel extends JPanel {
     
@@ -35,7 +38,7 @@ public class ClinicManagerWorkAreaJPanel extends JPanel {
         add(headerPanel, BorderLayout.NORTH);
         
         // Main panel
-        JPanel mainPanel = new JPanel(new GridLayout(6, 1, 10, 10));
+        JPanel mainPanel = new JPanel(new GridLayout(7, 1, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
         mainPanel.add(createButton("Request Vaccine Shipment", this::requestVaccineShipment));
@@ -44,6 +47,7 @@ public class ClinicManagerWorkAreaJPanel extends JPanel {
         mainPanel.add(createButton("View Vaccine Inventory", this::viewVaccineInventory));
         mainPanel.add(createButton("Report Disease Cases", this::reportDiseaseCases));
         mainPanel.add(createButton("View Clinic Statistics", this::viewClinicStatistics));
+        mainPanel.add(createButton("Request Lab Test", this::requestLabTest));
         
         add(mainPanel, BorderLayout.CENTER);
     }
@@ -103,4 +107,13 @@ public class ClinicManagerWorkAreaJPanel extends JPanel {
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.next(userProcessContainer);
     }
+    
+    private void requestLabTest() {
+        RequestLabTestJPanel panel = new RequestLabTestJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("RequestLabTest", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
 }

@@ -50,17 +50,18 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
                 if (request instanceof LabTestRequest) { // Showing all lab test requests since there is an Assign to me button available
                     LabTestRequest labRequest = (LabTestRequest) request;
                 
-                    Object[] row = new Object[8];
+                    Object[] row = new Object[9];
                     row[0] = labRequest;
                     row[1] = labRequest.getTestType() != null ? labRequest.getTestType() : "General Test";
                     row[2] = labRequest.getPatientName() != null ? labRequest.getPatientName() : "Unknown";
                     row[3] = labRequest.getUrgencyLevel() != null ? labRequest.getUrgencyLevel() : "Normal";
-                    row[4] = labRequest.getReceiver() != null ? labRequest.getReceiver().getUsername() : "Unassigned";
-                    row[5] = labRequest.getStatus() != null ? labRequest.getStatus() : "Pending";
-                    row[6] = labRequest.getTestResult() != null ? labRequest.getTestResult() : "-";
-                    row[7] = labRequest.getRequestDate();
+                    row[4] = labRequest.getSender() != null ? labRequest.getSender().getEmployee().getName() : "Unknown";
+                    row[5] = labRequest.getReceiver() != null ? labRequest.getReceiver().getUsername() : "Unassigned";
+                    row[6] = labRequest.getStatus() != null ? labRequest.getStatus() : "Pending";
+                    row[7] = labRequest.getTestResult() != null ? labRequest.getTestResult() : "-";
+                    row[8] = labRequest.getRequestDate();
 
-                model.addRow(row);
+                    model.addRow(row);
             
                 }
             }
@@ -90,20 +91,20 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
 
         tblWorkRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Request ID", "Test Type", "Patient Info", "Priority", "Assigned To", "Status", "Result Notes", "Request Date"
+                "Request ID", "Test Type", "Patient Info", "Priority", "Requested By", "Assigned To", "Status", "Result Notes", "Request Date"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -138,7 +139,7 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
         });
 
         lblTitle.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        lblTitle.setText("Lab Technician Work Area - <Name>");
+        lblTitle.setText("Lab Technician Work Area");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -151,13 +152,15 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
                         .addComponent(btnAssign)
                         .addGap(18, 18, 18)
                         .addComponent(btnProcess))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblTitle)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRefresh))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 704, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(47, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblTitle)
+                        .addGap(384, 384, 384)
+                        .addComponent(btnRefresh)))
+                .addContainerGap(155, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAssign, btnProcess});

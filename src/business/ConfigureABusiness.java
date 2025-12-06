@@ -669,9 +669,11 @@ public class ConfigureABusiness {
                   .getWorkQueue().getWorkRequestList().add(analysis);
         }
         
+        
         // 26-30: Lab Test Requests (Cross-Organization)
         Organization labOrg = providerEnt.getOrganizationDirectory().getOrganizationList().get(3);
         
+        // Demo lab test requests from Clinic Nurse susan.taylor to Lab Tech john.bob
         for (int i = 0; i < 5; i++) {
             LabTestRequest labTest = new LabTestRequest();
             String[] testTypes = {"COVID-19 PCR Test", "COVID-19 Antibody Test", "Influenza Test", "Blood Culture", "Complete Blood Count"};
@@ -681,8 +683,6 @@ public class ConfigureABusiness {
             labTest.setUrgencyLevel(i < 2 ? "URGENT" : "Normal");
             labTest.setMessage("Patient ID: PT" + (10000 + i) + " - " + testTypes[i % testTypes.length]);
             
-            
-            // Demo lab tests requested by Clinic Nurse Susan Taylor from John Bob
             labTest.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(1));
             labTest.setReceiver(labOrg.getUserAccountDirectory().getUserAccountList().get(0));
             
@@ -694,6 +694,30 @@ public class ConfigureABusiness {
             }
             
             labOrg.getWorkQueue().getWorkRequestList().add(labTest);
+        }
+        
+        // Demo lab test requests from Clinic Mgr christopher.lee to Lab Tech john.bob
+        for (int i = 0; i < 3; i++) {
+            LabTestRequest clinicLabTest = new LabTestRequest();
+            String[] testTypes = {"COVID-19 PCR Test", "Influenza Test", "Complete Blood Count"};
+            
+            clinicLabTest.setTestType(testTypes[i]);
+            clinicLabTest.setPatientName(generateName());
+            clinicLabTest.setUrgencyLevel("Normal");
+            clinicLabTest.setMessage("Patient: " + clinicLabTest.getPatientName() + " - " + testTypes[i]);
+            
+            clinicLabTest.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(0));
+            clinicLabTest.setReceiver(labOrg.getUserAccountDirectory().getUserAccountList().get(0));
+            
+            clinicLabTest.setStatus(i < 2 ? "Pending" : "Completed");
+            
+            if (i >= 2) {
+                clinicLabTest.setTestResult("Test completed: Negative");
+                clinicLabTest.setResolveDate(getDateInPast(2));
+            }
+            
+            clinic.getWorkQueue().getWorkRequestList().add(clinicLabTest);
+            labOrg.getWorkQueue().getWorkRequestList().add(clinicLabTest);
         }
         
         
