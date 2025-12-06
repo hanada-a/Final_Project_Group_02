@@ -2,6 +2,8 @@ package ui.NursePractitionerRole;
 
 import business.Business;
 import business.Domain.Disease;
+import business.Enterprise;
+import business.Network;
 import business.Organization.Organization;
 import business.UserAccount.UserAccount;
 import business.WorkQueue.DiseaseReportRequest;
@@ -200,9 +202,34 @@ public class ReportDiseaseCasesJPanel extends JPanel {
             request.setStatus("Pending");
             request.setMessage("Patient: " + patientName + ", Age: " + age + 
                              ", Disease: " + disease.getName() + ", Symptoms: " + symptoms);
+            request.setDisease(disease);
+            request.setCaseCount(1);
+            request.setLocation(organization.getName());
+            request.setPatientDemographics("Age: " + age);
             
             account.getWorkQueue().getWorkRequestList().add(request);
             organization.getWorkQueue().getWorkRequestList().add(request);
+            
+            // Route to Public Health Services organization (for emily.thompson to view)
+            Organization publicHealthOrg = null;
+            for (Network network : business.getEcoSystem().getNetworkList()) {
+                for (Enterprise enterprise : network.getEnterpriseList()) {
+                    if (enterprise.getName().contains("State Health")) {
+                        for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+                            if (org.getName().equals("Public Health Services")) {
+                                publicHealthOrg = org;
+                                break;
+                            }
+                        }
+                    }
+                    if (publicHealthOrg != null) break;
+                }
+                if (publicHealthOrg != null) break;
+            }
+            
+            if (publicHealthOrg != null) {
+                publicHealthOrg.getWorkQueue().getWorkRequestList().add(request);
+            }
             
             // Update table
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");

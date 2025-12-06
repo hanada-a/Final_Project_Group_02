@@ -18,18 +18,20 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Panel for hospital admin to request prescriptions from pharmacy org
+ * Panel for hospital admin to submit prescription requests to pharmacy
  * 
- * @author Maxwell Sowell
+ * @author maxwellsowell
  */
 public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
-    
+
     private JPanel userProcessContainer;
     private UserAccount userAccount;
     private Organization organization;
     private Business business;
-    
 
+    /**
+     * Creates new form SubmitPrescriptionJPanel
+     */
     public SubmitPrescriptionJPanel(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
         this.userProcessContainer = userProcessContainer;
         this.userAccount = account;
@@ -37,9 +39,18 @@ public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
         this.business = business;
         
         initComponents();
+        populateComboBox();
         populateTable();
     }
-
+    
+    private void populateComboBox() {
+        cmbMedication.removeAllItems();
+        String[] medications = {"Penicillin", "Gabapentin", "Hydrocodone", "Alprazolam", "Atorvastatin", 
+                               "Lisinopril", "Metformin", "Amlodipine", "Omeprazole", "Albuterol"};
+        for (String med : medications) {
+            cmbMedication.addItem(med);
+        }
+    }
     
     private void populateTable() {
         DefaultTableModel model = (DefaultTableModel) tblPrescriptions.getModel();
@@ -47,7 +58,8 @@ public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         
         for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
-            if (request instanceof PrescriptionRequest && request.getSender() != null && request.getSender().equals(userAccount)) {
+            if (request instanceof PrescriptionRequest && request.getSender() != null 
+                    && request.getSender().equals(userAccount)) {
                 PrescriptionRequest rxRequest = (PrescriptionRequest) request;
                 
                 Object[] row = new Object[6];
@@ -56,14 +68,13 @@ public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
                 row[2] = rxRequest.getMedicationName() != null ? rxRequest.getMedicationName() : "N/A";
                 row[3] = rxRequest.getDosage() != null ? rxRequest.getDosage() : "N/A";
                 row[4] = rxRequest.getStatus() != null ? rxRequest.getStatus() : "Pending";
-                row[5] = rxRequest.getFulfillmentNotes() != null ? rxRequest.getFulfillmentNotes() : "-";
+                row[5] = rxRequest.getQuantity() > 0 ? rxRequest.getQuantity() + " pills" : "-";
                 
                 model.addRow(row);
             }
         }
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -245,21 +256,25 @@ public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
         try {
             String patientName = txtPatientName.getText().trim();
             if (patientName.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Enter patient name");
+                JOptionPane.showMessageDialog(this, "Please enter patient name");
                 return;
             }
-            
+
             String medication = (String) cmbMedication.getSelectedItem();
-            String dosage = txtDosage.getText().trim();
-            String quantityStr = txtQuantity.getText().trim();
-            
-            if (dosage.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Enter dosage");
+            if (medication == null) {
+                JOptionPane.showMessageDialog(this, "Please select medication");
                 return;
             }
             
+            String dosage = txtDosage.getText().trim();
+            if (dosage.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter dosage");
+                return;
+            }
+            
+            String quantityStr = txtQuantity.getText().trim();
             if (quantityStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Enter quantity");
+                JOptionPane.showMessageDialog(this, "Please enter quantity");
                 return;
             }
             
@@ -271,12 +286,11 @@ public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
                     return;
                 }
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Quantity must be a number");
+                JOptionPane.showMessageDialog(this, "Please enter a valid quantity number");
                 return;
             }
-            
-            
-            // Get pharmacy org recipient
+
+            // Find pharmacy organization
             Organization pharmacyOrg = null;
             for (Network network : business.getEcoSystem().getNetworkList()) {
                 for (Enterprise enterprise : network.getEnterpriseList()) {
@@ -287,43 +301,49 @@ public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
                                 break;
                             }
                         }
+                        if (pharmacyOrg != null) break;
                     }
-                    if (pharmacyOrg != null) break;
                 }
                 if (pharmacyOrg != null) break;
             }
-            
+
             if (pharmacyOrg == null || pharmacyOrg.getUserAccountDirectory().getUserAccountList().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Pharmacy organization not found");
                 return;
             }
-            
-            
-            // Create the request
+
+            // Create prescription request
             PrescriptionRequest rxRequest = new PrescriptionRequest();
             rxRequest.setPatientName(patientName);
             rxRequest.setMedicationName(medication);
             rxRequest.setDosage(dosage);
             rxRequest.setQuantity(quantity);
             rxRequest.setPrescribingDoctor(userAccount.getEmployee().getName());
-            rxRequest.setMessage("Prescription: " + medication + " for " + patientName);
+            rxRequest.setMessage("Prescription for " + medication + " - " + dosage + " - Qty: " + quantity);
             rxRequest.setSender(userAccount);
             rxRequest.setReceiver(pharmacyOrg.getUserAccountDirectory().getUserAccountList().get(0));
             rxRequest.setStatus("Pending");
-            
+
+            // Add to both queues
             organization.getWorkQueue().getWorkRequestList().add(rxRequest);
             pharmacyOrg.getWorkQueue().getWorkRequestList().add(rxRequest);
-            
-            JOptionPane.showMessageDialog(this, "Prescription submitted to pharmacy");
-           
+
+            JOptionPane.showMessageDialog(this, 
+                "Prescription request submitted successfully!\n\n" +
+                "Patient: " + patientName + "\n" +
+                "Medication: " + medication + "\n" +
+                "Dosage: " + dosage + "\n" +
+                "Quantity: " + quantity);
+
+            // Clear form
             txtPatientName.setText("");
             cmbMedication.setSelectedIndex(0);
             txtDosage.setText("");
             txtQuantity.setText("");
             populateTable();
-            
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error submitting prescription: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error submitting request: " + e.getMessage());
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
 

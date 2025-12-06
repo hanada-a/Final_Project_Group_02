@@ -45,6 +45,7 @@ public class HospitalAdminWorkAreaJPanel extends JPanel {
         mainPanel.add(createButton("Manage Hospital Staff", this::manageHospitalStaff));
         mainPanel.add(createButton("View Patient Appointments", this::viewPatientAppointments));
         mainPanel.add(createButton("Monitor Vaccine Inventory", this::monitorVaccineInventory));
+        mainPanel.add(createButton("Submit Prescription Request", this::submitPrescriptionRequest));
         mainPanel.add(createButton("Coordinate with Clinics", this::coordinateWithClinics));
         mainPanel.add(createButton("Review Compliance Status", this::reviewComplianceStatus));
         mainPanel.add(createButton("Generate Hospital Reports", this::generateHospitalReports));
@@ -81,6 +82,14 @@ public class HospitalAdminWorkAreaJPanel extends JPanel {
         MonitorVaccineInventoryJPanel panel = new MonitorVaccineInventoryJPanel(
             userProcessContainer, account, organization, business);
         userProcessContainer.add("MonitorVaccineInventory", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
+    private void submitPrescriptionRequest() {
+        SubmitPrescriptionJPanel panel = new SubmitPrescriptionJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("SubmitPrescriptionRequest", panel);
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.next(userProcessContainer);
     }
