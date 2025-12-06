@@ -548,6 +548,7 @@ public class ConfigureABusiness {
             shipment.setMessage(vaccine.getName() + " - Qty: " + quantity + " - " + (i % 2 == 0 ? "Urgent shipment" : "Routine resupply"));
             shipment.setUrgentDelivery(i % 2 == 0);
             shipment.setStatus(i < 2 ? "Pending" : "Completed");
+            clinic.getWorkQueue().getWorkRequestList().add(shipment);
             providerRegistry.getWorkQueue().getWorkRequestList().add(shipment);
         }
         
@@ -607,7 +608,7 @@ public class ConfigureABusiness {
         }
         
         // Nurse disease case reports for susan.taylor
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 15; i++) {
             DiseaseReportRequest nurseReport = new DiseaseReportRequest();
             String patientName = generateName();
             Disease disease = business.getDiseaseDirectory().get(i % 4);
@@ -620,7 +621,7 @@ public class ConfigureABusiness {
             nurseReport.setSender(clinic.getUserAccountDirectory().getUserAccountList().get(0));
             nurseReport.setReceiver(publicHealth.getUserAccountDirectory().getUserAccountList().get(0));
             nurseReport.setMessage("Patient: " + patientName + ", Disease: " + disease.getName() + ", Symptoms observed at clinic");
-            nurseReport.setStatus(i < 2 ? "Pending" : "Reported");
+            nurseReport.setStatus(i < 5 ? "Pending" : "Reported");
             clinic.getWorkQueue().getWorkRequestList().add(nurseReport);
         }
         
