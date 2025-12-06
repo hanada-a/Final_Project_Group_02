@@ -63,7 +63,7 @@ public class ProcessTestRequestJPanel extends javax.swing.JPanel {
         });
 
         lblTitle.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        lblTitle.setText("Result Submission");
+        lblTitle.setText("Lab Test Result Submission");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

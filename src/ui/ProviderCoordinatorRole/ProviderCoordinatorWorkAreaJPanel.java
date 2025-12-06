@@ -8,6 +8,9 @@ import javax.swing.*;
 
 /**
  * Work area for Provider Coordinator role
+ * 
+ * @author Akira Hanada
+ * @author Maxwell Sowell
  */
 public class ProviderCoordinatorWorkAreaJPanel extends JPanel {
     
@@ -35,7 +38,7 @@ public class ProviderCoordinatorWorkAreaJPanel extends JPanel {
         add(headerPanel, BorderLayout.NORTH);
         
         // Main panel
-        JPanel mainPanel = new JPanel(new GridLayout(5, 1, 10, 10));
+        JPanel mainPanel = new JPanel(new GridLayout(6, 1, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
         mainPanel.add(createButton("Manage Healthcare Providers", this::manageHealthcareProviders));
@@ -43,6 +46,7 @@ public class ProviderCoordinatorWorkAreaJPanel extends JPanel {
         mainPanel.add(createButton("Schedule Compliance Audits", this::scheduleComplianceAudits));
         mainPanel.add(createButton("View Provider Registry", this::viewProviderRegistry));
         mainPanel.add(createButton("Request Vaccine Allocation from CDC", this::requestVaccineAllocationFromCDC));
+        mainPanel.add(createButton("Process Cold Chain Failure Reports", this::processColdChainFailureReports));
         
         add(mainPanel, BorderLayout.CENTER);
     }
@@ -94,4 +98,13 @@ public class ProviderCoordinatorWorkAreaJPanel extends JPanel {
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.next(userProcessContainer);
     }
+    
+    private void processColdChainFailureReports() {
+        ProcessColdChainFailureRequestsJPanel panel = new ProcessColdChainFailureRequestsJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("ProcessColdChainFailureRequestsJPanel", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
 }
