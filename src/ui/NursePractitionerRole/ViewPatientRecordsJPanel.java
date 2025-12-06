@@ -3,8 +3,11 @@ package ui.NursePractitionerRole;
 import business.Business;
 import business.Organization.Organization;
 import business.UserAccount.UserAccount;
+import business.WorkQueue.PatientAppointmentRequest;
+import business.WorkQueue.WorkRequest;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -16,10 +19,12 @@ public class ViewPatientRecordsJPanel extends JPanel {
     private JPanel userProcessContainer;
     private JTable patientTable;
     private DefaultTableModel tableModel;
+    private Organization organization;
     
     public ViewPatientRecordsJPanel(JPanel userProcessContainer, UserAccount account,
                                    Organization organization, Business business) {
         this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
         
         setLayout(new BorderLayout());
         
@@ -36,7 +41,7 @@ public class ViewPatientRecordsJPanel extends JPanel {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
-        String[] columns = {"Patient ID", "Name", "Age", "Last Visit", "Status", "Notes"};
+        String[] columns = {"Patient ID", "Name", "Phone", "Last Visit", "Status", "Service/Vaccine"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -45,23 +50,19 @@ public class ViewPatientRecordsJPanel extends JPanel {
         };
         patientTable = new JTable(tableModel);
         
-        // Add sample patient data
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        java.util.Date today = new java.util.Date();
-        
-        tableModel.addRow(new Object[]{"P001", "John Smith", "45", sdf.format(today), "Vaccinated", "COVID-19 Dose 2"});
-        tableModel.addRow(new Object[]{"P002", "Mary Johnson", "67", "11/15/2024", "Follow-up Needed", "Flu shot administered"});
-        tableModel.addRow(new Object[]{"P003", "Robert Williams", "32", "11/10/2024", "Completed", "MMR vaccination"});
-        tableModel.addRow(new Object[]{"P004", "Patricia Brown", "54", "11/08/2024", "Vaccinated", "Hepatitis B Dose 1"});
-        tableModel.addRow(new Object[]{"P005", "James Davis", "28", "11/05/2024", "Completed", "Annual checkup"});
+        // Load patient records from work queue
+        loadPatientRecords();
         
         mainPanel.add(new JScrollPane(patientTable), BorderLayout.CENTER);
         
         // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton refreshButton = new JButton("Refresh");
-        refreshButton.addActionListener(e -> JOptionPane.showMessageDialog(this, 
-            "Patient records refreshed", "Info", JOptionPane.INFORMATION_MESSAGE));
+        refreshButton.addActionListener(e -> {
+            loadPatientRecords();
+            JOptionPane.showMessageDialog(this, 
+                "Patient records refreshed", "Info", JOptionPane.INFORMATION_MESSAGE);
+        });
         
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> goBack());
@@ -71,6 +72,80 @@ public class ViewPatientRecordsJPanel extends JPanel {
         
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         add(mainPanel, BorderLayout.CENTER);
+    }
+    
+    private void loadPatientRecords() {
+        tableModel.setRowCount(0);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        
+        // Map to store unique patients (using phone as unique identifier)
+        Map<String, Object[]> patientMap = new HashMap<>();
+        int patientIdCounter = 1;
+        
+        // Load from all patient appointment requests in the work queue
+        for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
+            if (request instanceof PatientAppointmentRequest) {
+                PatientAppointmentRequest appointment = (PatientAppointmentRequest) request;
+                
+                String patientPhone = appointment.getPatientPhone();
+                String patientName = appointment.getPatientName();
+                
+                if (patientPhone != null && patientName != null) {
+                    // Parse service/vaccine info from message
+                    String serviceInfo = "General Visit";
+                    if (appointment.getMessage() != null) {
+                        String message = appointment.getMessage();
+                        // Extract service details (format: "Name - Service" or "Name - Vaccine - Dose")
+                        if (message.contains(" - ")) {
+                            String[] parts = message.split(" - ");
+                            if (parts.length > 1) {
+                                serviceInfo = String.join(" - ", Arrays.copyOfRange(parts, 1, parts.length));
+                            }
+                        }
+                    }
+                    
+                    String visitDate = appointment.getPreferredDate() != null ? 
+                        sdf.format(appointment.getPreferredDate()) : 
+                        sdf.format(appointment.getRequestDate());
+                    
+                    String status = appointment.getStatus() != null ? appointment.getStatus() : "Scheduled";
+                    
+                    // Update patient record if exists, otherwise create new
+                    if (patientMap.containsKey(patientPhone)) {
+                        Object[] existingRecord = patientMap.get(patientPhone);
+                        // Update with most recent visit date
+                        try {
+                            java.util.Date existingDate = sdf.parse((String) existingRecord[3]);
+                            java.util.Date newDate = appointment.getPreferredDate() != null ? 
+                                appointment.getPreferredDate() : appointment.getRequestDate();
+                            if (newDate.after(existingDate)) {
+                                existingRecord[3] = visitDate;
+                                existingRecord[4] = status;
+                                existingRecord[5] = serviceInfo;
+                            }
+                        } catch (Exception e) {
+                            // Keep existing record if date parsing fails
+                        }
+                    } else {
+                        String patientId = String.format("P%03d", patientIdCounter++);
+                        Object[] record = new Object[]{
+                            patientId,
+                            patientName,
+                            patientPhone,
+                            visitDate,
+                            status,
+                            serviceInfo
+                        };
+                        patientMap.put(patientPhone, record);
+                    }
+                }
+            }
+        }
+        
+        // Add all unique patients to table, sorted by patient ID
+        patientMap.values().stream()
+            .sorted((a, b) -> ((String)a[0]).compareTo((String)b[0]))
+            .forEach(tableModel::addRow);
     }
     
     private void goBack() {
