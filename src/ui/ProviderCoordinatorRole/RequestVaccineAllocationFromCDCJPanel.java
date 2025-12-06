@@ -134,15 +134,17 @@ public class RequestVaccineAllocationFromCDCJPanel extends JPanel {
             Organization cdcOrg = null;
             for (Network network : business.getEcoSystem().getNetworkList()) {
                 for (Enterprise enterprise : network.getEnterpriseList()) {
-                    if (enterprise.getName().contains("CDC")) {
+                    if (enterprise.getName().contains("Centers for Disease Control") || 
+                        enterprise.getName().contains("CDC")) {
                         for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
-                            if (org.getName().contains("Vaccine Distribution")) {
+                            if (org.getName().contains("Vaccine Distribution") || 
+                                org.getName().contains("Distribution Coordination")) {
                                 cdcOrg = org;
                                 break;
                             }
                         }
+                        if (cdcOrg != null) break;
                     }
-                    if (cdcOrg != null) break;
                 }
                 if (cdcOrg != null) break;
             }

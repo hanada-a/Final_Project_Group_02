@@ -1,7 +1,7 @@
 # Public Health Information Management System
 ## Final Project - Application Engineering and Development
 
-**Team Members:** Akira Hanada, Travis Hodo, Maxwell Sowell  
+**Team Members:** Akira Hanada, Maxwell Sowell, Travis Hodo(Withdrawn from the Group)  
 **Course:** Application Engineering and Development  
 **Institution:** Northeastern University  
 **Submission Date:** December 2025
