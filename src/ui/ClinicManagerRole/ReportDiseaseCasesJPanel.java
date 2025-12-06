@@ -180,15 +180,43 @@ public class ReportDiseaseCasesJPanel extends JPanel {
                 return;
             }
             
+            // Find Public Health Services organization
+            Organization publicHealthOrg = null;
+            for (business.Network network : business.getEcoSystem().getNetworkList()) {
+                for (business.Enterprise enterprise : network.getEnterpriseList()) {
+                    if (enterprise.getName().contains("State Health")) {
+                        for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+                            if (org.getName().contains("Public Health")) {
+                                publicHealthOrg = org;
+                                break;
+                            }
+                        }
+                        if (publicHealthOrg != null) break;
+                    }
+                }
+                if (publicHealthOrg != null) break;
+            }
+            
             // Create disease report request
             DiseaseReportRequest request = new DiseaseReportRequest();
+            request.setDisease(disease);
+            request.setCaseCount(caseCount);
+            request.setLocation(organization.getName() + ", Brooklyn, NY");
+            request.setPatientDemographics("Clinic patients, mixed demographics");
+            request.setOnsetDate(new java.util.Date());
             request.setSender(account);
             request.setStatus("Pending");
             request.setMessage("Disease: " + disease.getName() + ", Cases: " + caseCount + 
                              ", Details: " + details + ", Location: " + organization.getName());
             
-            account.getWorkQueue().getWorkRequestList().add(request);
+            // Add to clinic's queue (for christopher.lee to view)
             organization.getWorkQueue().getWorkRequestList().add(request);
+            
+            // Add to public health queue (for emily.thompson to view)
+            if (publicHealthOrg != null) {
+                request.setReceiver(publicHealthOrg.getUserAccountDirectory().getUserAccountList().get(0));
+                publicHealthOrg.getWorkQueue().getWorkRequestList().add(request);
+            }
             
             // Update table
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
