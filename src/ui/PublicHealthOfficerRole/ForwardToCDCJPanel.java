@@ -108,20 +108,72 @@ public class ForwardToCDCJPanel extends JPanel {
             return;
         }
         
-        JOptionPane.showMessageDialog(this,
-            String.format("Forwarding %d disease report(s) to CDC...\n\n" +
-            "Reports will be added to CDC's Disease Surveillance Organization for national tracking.",
-            selectedCount),
-            "Forwarding to CDC",
-            JOptionPane.INFORMATION_MESSAGE);
+        // Find CDC's Disease Surveillance Organization
+        Organization cdcDiseaseSurv = null;
+        for (Network network : business.getEcoSystem().getNetworkList()) {
+            for (Enterprise enterprise : network.getEnterpriseList()) {
+                if (enterprise.getName().contains("Centers for Disease Control") || 
+                    enterprise.getName().contains("CDC")) {
+                    for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+                        if (org.getName().contains("Disease Surveillance")) {
+                            cdcDiseaseSurv = org;
+                            break;
+                        }
+                    }
+                    if (cdcDiseaseSurv != null) break;
+                }
+            }
+            if (cdcDiseaseSurv != null) break;
+        }
         
-        // Mark as forwarded
-        for (int i = 0; i < tableModel.getRowCount(); i++) {
-            if ((Boolean) tableModel.getValueAt(i, 0)) {
-                tableModel.setValueAt("Forwarded to CDC", i, 4);
-                tableModel.setValueAt(Boolean.FALSE, i, 0);
+        if (cdcDiseaseSurv == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Error: CDC Disease Surveillance Organization not found", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Forward selected reports to CDC
+        int forwardedCount = 0;
+        int index = 0;
+        for (Object obj : organization.getWorkQueue().getWorkRequestList()) {
+            if (obj instanceof DiseaseReportRequest) {
+                if (index < tableModel.getRowCount() && (Boolean) tableModel.getValueAt(index, 0)) {
+                    DiseaseReportRequest request = (DiseaseReportRequest) obj;
+                    
+                    // Create a copy of the request for CDC
+                    DiseaseReportRequest cdcRequest = new DiseaseReportRequest();
+                    cdcRequest.setDisease(request.getDisease());
+                    cdcRequest.setCaseCount(request.getCaseCount());
+                    cdcRequest.setLocation(request.getLocation());
+                    cdcRequest.setPatientDemographics(request.getPatientDemographics());
+                    cdcRequest.setOnsetDate(request.getOnsetDate());
+                    cdcRequest.setSender(request.getSender());
+                    cdcRequest.setReceiver(cdcDiseaseSurv.getUserAccountDirectory().getUserAccountList().get(0));
+                    cdcRequest.setMessage("Forwarded from State: " + request.getMessage());
+                    cdcRequest.setStatus("Pending");
+                    
+                    // Add to CDC's work queue
+                    cdcDiseaseSurv.getWorkQueue().getWorkRequestList().add(cdcRequest);
+                    
+                    // Update original request status
+                    request.setStatus("Forwarded to CDC");
+                    
+                    forwardedCount++;
+                }
+                index++;
             }
         }
+        
+        JOptionPane.showMessageDialog(this,
+            String.format("Successfully forwarded %d disease report(s) to CDC!\n\n" +
+            "Reports have been added to CDC's Disease Surveillance Organization for national tracking.",
+            forwardedCount),
+            "Forwarding Complete",
+            JOptionPane.INFORMATION_MESSAGE);
+        
+        // Reload the table to reflect updated statuses
+        loadReports();
     }
     
     private void goBack() {
