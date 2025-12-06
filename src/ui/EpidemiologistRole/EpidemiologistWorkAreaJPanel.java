@@ -103,9 +103,23 @@ public class EpidemiologistWorkAreaJPanel extends JPanel {
             return;
         }
         
-        // Get the request and show details
-        DiseaseReportRequest request = (DiseaseReportRequest) organization.getWorkQueue()
-                                            .getWorkRequestList().get(selectedRow);
+        // Get the request by filtering through the work queue to find the corresponding DiseaseReportRequest
+        int diseaseReportIndex = 0;
+        DiseaseReportRequest request = null;
+        for (Object obj : organization.getWorkQueue().getWorkRequestList()) {
+            if (obj instanceof DiseaseReportRequest) {
+                if (diseaseReportIndex == selectedRow) {
+                    request = (DiseaseReportRequest) obj;
+                    break;
+                }
+                diseaseReportIndex++;
+            }
+        }
+        
+        if (request == null) {
+            JOptionPane.showMessageDialog(this, "Error: Could not find the selected request");
+            return;
+        }
         
         StringBuilder details = new StringBuilder();
         details.append("Disease: ").append(request.getDisease().getName()).append("\n");
