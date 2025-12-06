@@ -8,6 +8,10 @@ import javax.swing.*;
 
 /**
  * Work area for Hospital Administrator role
+ * 
+ * @author Akira Hanada
+ * @author Maxwell Sowell
+ * 
  */
 public class HospitalAdminWorkAreaJPanel extends JPanel {
     
@@ -35,7 +39,7 @@ public class HospitalAdminWorkAreaJPanel extends JPanel {
         add(headerPanel, BorderLayout.NORTH);
         
         // Main panel
-        JPanel mainPanel = new JPanel(new GridLayout(6, 1, 10, 10));
+        JPanel mainPanel = new JPanel(new GridLayout(7, 1, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
         mainPanel.add(createButton("Manage Hospital Staff", this::manageHospitalStaff));
@@ -44,7 +48,8 @@ public class HospitalAdminWorkAreaJPanel extends JPanel {
         mainPanel.add(createButton("Coordinate with Clinics", this::coordinateWithClinics));
         mainPanel.add(createButton("Review Compliance Status", this::reviewComplianceStatus));
         mainPanel.add(createButton("Generate Hospital Reports", this::generateHospitalReports));
-        
+        mainPanel.add(createButton("Submit Prescription", this::submitPrescription));
+
         add(mainPanel, BorderLayout.CENTER);
     }
     
@@ -103,4 +108,13 @@ public class HospitalAdminWorkAreaJPanel extends JPanel {
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.next(userProcessContainer);
     }
+    
+    private void submitPrescription() {
+        SubmitPrescriptionJPanel panel = new SubmitPrescriptionJPanel(
+            userProcessContainer, account, organization, business);
+        userProcessContainer.add("SubmitPrescription", panel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }
+    
 }

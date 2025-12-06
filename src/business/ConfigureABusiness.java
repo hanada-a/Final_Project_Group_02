@@ -728,6 +728,8 @@ public class ConfigureABusiness {
         String[] dosages = {"250mg", "800mg", "5mg", "1mg", "20mg"};
         int[] quantities = {30, 120, 15, 60, 90};
         
+        
+        // Demo prescriptions sent from Hospital Admin (Dr. Amanda Garcia) to Pharmacist (Dan Man)
         for (int i = 0; i < 5; i++) {
             PrescriptionRequest rxRequest = new PrescriptionRequest();
             
@@ -736,9 +738,7 @@ public class ConfigureABusiness {
             rxRequest.setDosage(dosages[i]);
             rxRequest.setQuantity(quantities[i]);
             rxRequest.setPrescribingDoctor("Dr. Amanda Garcia");
-            rxRequest.setMessage("Prescription for " + medications[i] + " - " + dosages[i]);
-            
-            // Demo prescriptions sent from Hospital Admin (Dr. Amanda Garcia) to Pharmacist (Dan Man)
+            rxRequest.setMessage("Prescription: " + medications[i] + dosages[i] + " for " + rxRequest.getPatientName());
             rxRequest.setSender(hospital.getUserAccountDirectory().getUserAccountList().get(0));
             rxRequest.setReceiver(pharmacyOrg.getUserAccountDirectory().getUserAccountList().get(0));
             
@@ -749,6 +749,7 @@ public class ConfigureABusiness {
                 rxRequest.setResolveDate(getDateInPast(random.nextInt(3) + 1));
             }
             
+            hospital.getWorkQueue().getWorkRequestList().add(rxRequest);
             pharmacyOrg.getWorkQueue().getWorkRequestList().add(rxRequest);
         }
         
