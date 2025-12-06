@@ -22,6 +22,8 @@ public class ColdChainFailureRequest extends WorkRequest {
     private String durationOfExposure;
     private String correctiveAction;
     private String replacementStatus;
+    private String coordinatorResponse;
+    private String coordinatorNotes;
     
     
     public ColdChainFailureRequest() {
@@ -93,6 +95,22 @@ public class ColdChainFailureRequest extends WorkRequest {
 
     public void setReplacementStatus(String replacementStatus) {
         this.replacementStatus = replacementStatus;
+    }
+
+    public String getCoordinatorResponse() {
+        return coordinatorResponse;
+    }
+
+    public void setCoordinatorResponse(String coordinatorResponse) {
+        this.coordinatorResponse = coordinatorResponse;
+    }
+
+    public String getCoordinatorNotes() {
+        return coordinatorNotes;
+    }
+
+    public void setCoordinatorNotes(String coordinatorNotes) {
+        this.coordinatorNotes = coordinatorNotes;
     }
     
     

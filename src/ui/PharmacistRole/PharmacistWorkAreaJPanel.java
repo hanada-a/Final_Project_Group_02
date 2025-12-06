@@ -44,28 +44,31 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
 
     
     private void populateRequestTable() {
-        
-        DefaultTableModel model = (DefaultTableModel) tblWorkRequests.getModel();
-        model.setRowCount(0);
-        
-        // Get prescription requests assigned to this pharmacist
-        for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
-            if (request instanceof PrescriptionRequest && request.getReceiver() != null 
-                    && request.getReceiver().equals(userAccount)) {
-                PrescriptionRequest rxRequest = (PrescriptionRequest) request;
-                
-                Object[] row = new Object[8];
-                row[0] = rxRequest.getPatientName() != null ? rxRequest.getPatientName() : "Unknown";
-                row[1] = rxRequest.getMedicationName() != null ? rxRequest.getMedicationName() : "N/A";
-                row[2] = rxRequest.getDosage() != null ? rxRequest.getDosage() : "N/A";
-                row[3] = rxRequest.getQuantity();
-                row[4] = rxRequest.getPrescribingDoctor() != null ? rxRequest.getPrescribingDoctor() : "N/A";
-                row[5] = rxRequest.getStatus() != null ? rxRequest.getStatus() : "Pending";
-                row[6] = rxRequest.getFulfillmentNotes() != null ? rxRequest.getFulfillmentNotes() : "-";
-                row[7] = rxRequest.getRequestDate();
-                
-                model.addRow(row);
+        try {
+            DefaultTableModel model = (DefaultTableModel) tblWorkRequests.getModel();
+            model.setRowCount(0);
+
+            // Get prescription requests assigned to this pharmacist
+            for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
+                if (request instanceof PrescriptionRequest && request.getReceiver() != null && request.getReceiver().equals(userAccount)) {
+                    PrescriptionRequest rxRequest = (PrescriptionRequest) request;
+
+                    Object[] row = new Object[8];
+                    row[0] = rxRequest.getPatientName() != null ? rxRequest.getPatientName() : "Unknown";
+                    row[1] = rxRequest.getMedicationName() != null ? rxRequest.getMedicationName() : "N/A";
+                    row[2] = rxRequest.getDosage() != null ? rxRequest.getDosage() : "N/A";
+                    row[3] = rxRequest.getQuantity();
+                    row[4] = rxRequest.getPrescribingDoctor() != null ? rxRequest.getPrescribingDoctor() : "N/A";
+                    row[5] = rxRequest.getStatus() != null ? rxRequest.getStatus() : "Pending";
+                    row[6] = rxRequest.getFulfillmentNotes() != null ? rxRequest.getFulfillmentNotes() : "-";
+                    row[7] = rxRequest.getRequestDate();
+
+                    model.addRow(row);
+                    
+                }
             }
+        } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error loading prescriptions: " + e.getMessage());
         }
     }
     
@@ -84,7 +87,6 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
         btnFulfillPrescription = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
         lblTitle = new javax.swing.JLabel();
-        btnBack = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtFulfillmentNotes = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
@@ -134,13 +136,6 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
         lblTitle.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         lblTitle.setText("Pharmacist Work Area - <Name>");
 
-        btnBack.setText("<< Back");
-        btnBack.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBackActionPerformed(evt);
-            }
-        });
-
         txtFulfillmentNotes.setColumns(20);
         txtFulfillmentNotes.setRows(5);
         jScrollPane2.setViewportView(txtFulfillmentNotes);
@@ -156,17 +151,13 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnFulfillPrescription)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addComponent(lblTitle)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnRefresh))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnFulfillPrescription)
-                                .addComponent(btnBack)))))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)))
                 .addGap(78, 78, 78))
         );
         layout.setVerticalGroup(
@@ -181,13 +172,10 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnFulfillPrescription)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBack))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnFulfillPrescription)
+                .addContainerGap(132, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -232,6 +220,9 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
             
             txtFulfillmentNotes.setText("");
             populateRequestTable();
+            
+        } else {
+            JOptionPane.showMessageDialog(this, "Request not found in system");
         }
         
     }//GEN-LAST:event_btnFulfillPrescriptionActionPerformed
@@ -242,17 +233,8 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btnRefreshActionPerformed
 
-    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-
-        userProcessContainer.remove(this);
-        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
-        layout.previous(userProcessContainer);
-        
-    }//GEN-LAST:event_btnBackActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnFulfillPrescription;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JLabel jLabel1;

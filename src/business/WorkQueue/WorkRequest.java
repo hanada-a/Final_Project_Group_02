@@ -10,6 +10,7 @@ import java.util.Date;
 /**
  *
  * @author raunak
+ * @author Maxwell Sowell
  */
 public abstract class WorkRequest {
 

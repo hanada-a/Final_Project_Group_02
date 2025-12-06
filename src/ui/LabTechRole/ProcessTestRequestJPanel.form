@@ -88,7 +88,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="13" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Result Submission"/>
+        <Property name="text" type="java.lang.String" value="Lab Test Result Submission"/>
       </Properties>
     </Component>
   </SubComponents>

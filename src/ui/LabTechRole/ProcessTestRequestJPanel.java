@@ -11,17 +11,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
- *
+ * Panel for lab tech to enter results for a requested lab test
+ * 
  * @author raunak
+ * @author Maxwell Sowell
  */
-public class ProcessWorkRequestJPanel extends javax.swing.JPanel {
+public class ProcessTestRequestJPanel extends javax.swing.JPanel {
 
     JPanel userProcessContainer;
     LabTestRequest request;
-    /**
-     * Creates new form ProcessWorkRequestJPanel
-     */
-    public ProcessWorkRequestJPanel(JPanel userProcessContainer, LabTestRequest request) {
+
+    
+    public ProcessTestRequestJPanel(JPanel userProcessContainer, LabTestRequest request) {
         initComponents();
         this.userProcessContainer = userProcessContainer;
         this.request = request;
@@ -62,7 +63,7 @@ public class ProcessWorkRequestJPanel extends javax.swing.JPanel {
         });
 
         lblTitle.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        lblTitle.setText("Result Submission");
+        lblTitle.setText("Lab Test Result Submission");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -110,9 +111,27 @@ public class ProcessWorkRequestJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-        request.setTestResult(txtResults.getText());
+
+        String result = txtResults.getText().trim();
+        if (result.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter test results");
+            return;
+        }
+        
+        request.setTestResult(result);
         request.setStatus("Completed");
-        JOptionPane.showMessageDialog(null, "Message processed");
+        request.setResolveDate(new java.util.Date());
+        JOptionPane.showMessageDialog(null, "Test results submitted");
+        
+        
+        // Feels better to auto-navigate back after adding test results
+        userProcessContainer.remove(this);
+        Component[] componentArray = userProcessContainer.getComponents();
+        Component component = componentArray[componentArray.length - 1];
+        LabTechWorkAreaJPanel lwjp = (LabTechWorkAreaJPanel) component;
+        lwjp.populateTable();
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
      
     }//GEN-LAST:event_btnSubmitActionPerformed
 
