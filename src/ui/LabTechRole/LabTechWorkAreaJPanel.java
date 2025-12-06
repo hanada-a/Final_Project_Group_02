@@ -42,25 +42,31 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
 
     
     public void populateTable() {
-        DefaultTableModel model = (DefaultTableModel) tblWorkRequests.getModel();
-        model.setRowCount(0);
+        try {
+            DefaultTableModel model = (DefaultTableModel) tblWorkRequests.getModel();
+            model.setRowCount(0);
 
-        for (WorkRequest request : labOrganization.getWorkQueue().getWorkRequestList()) {
-            if (request instanceof LabTestRequest && request.getReceiver() != null && request.getReceiver().equals(userAccount)) {
-                LabTestRequest labRequest = (LabTestRequest) request;
+            for (WorkRequest request : labOrganization.getWorkQueue().getWorkRequestList()) {
+                if (request instanceof LabTestRequest) { // Showing all lab test requests since there is an Assign to me button available
+                    LabTestRequest labRequest = (LabTestRequest) request;
                 
-                Object[] row = new Object[7];
-                row[0] = labRequest;
-                row[1] = labRequest.getTestType() != null ? labRequest.getTestType() : "General Test";
-                row[2] = labRequest.getPatientName() != null ? labRequest.getPatientName() : "Unknown";
-                row[3] = labRequest.getUrgencyLevel() != null ? labRequest.getUrgencyLevel() : "Normal";
-                row[4] = labRequest.getStatus() != null ? labRequest.getStatus() : "Pending";
-                row[5] = labRequest.getTestResult() != null ? labRequest.getTestResult() : "-";
-                row[6] = labRequest.getRequestDate();
+                    Object[] row = new Object[8];
+                    row[0] = labRequest;
+                    row[1] = labRequest.getTestType() != null ? labRequest.getTestType() : "General Test";
+                    row[2] = labRequest.getPatientName() != null ? labRequest.getPatientName() : "Unknown";
+                    row[3] = labRequest.getUrgencyLevel() != null ? labRequest.getUrgencyLevel() : "Normal";
+                    row[4] = labRequest.getReceiver() != null ? labRequest.getReceiver().getUsername() : "Unassigned";
+                    row[5] = labRequest.getStatus() != null ? labRequest.getStatus() : "Pending";
+                    row[6] = labRequest.getTestResult() != null ? labRequest.getTestResult() : "-";
+                    row[7] = labRequest.getRequestDate();
 
-            model.addRow(row);
+                model.addRow(row);
             
+                }
             }
+        
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error loading requests: " + e.getMessage());
         }
     }
 
@@ -84,20 +90,20 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
 
         tblWorkRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Request ID", "Test Type", "Patient Info", "Priority", "Status", "Result Notes", "Request Date"
+                "Request ID", "Test Type", "Patient Info", "Priority", "Assigned To", "Status", "Result Notes", "Request Date"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -139,22 +145,19 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(45, 45, 45)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(59, 59, 59)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAssign)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnProcess))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblTitle)
-                                .addGap(303, 303, 303)
-                                .addComponent(btnRefresh)))))
-                .addContainerGap(115, Short.MAX_VALUE))
+                        .addComponent(btnAssign)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnProcess))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(lblTitle)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRefresh))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 704, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAssign, btnProcess});
@@ -179,7 +182,7 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
     private void btnAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAssignActionPerformed
 
         int selectedRow = tblWorkRequests.getSelectedRow();
-
+        
         if (selectedRow >= 0) {
             WorkRequest request = (WorkRequest) tblWorkRequests.getValueAt(selectedRow, 0);
             if (request.getMessage().equalsIgnoreCase("Completed")) {
@@ -193,7 +196,7 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
             }
 
         } else {
-            JOptionPane.showMessageDialog(null, "Choose a reuest to process.");
+            JOptionPane.showMessageDialog(null, "Choose a request to process.");
             return;
         }
 
@@ -209,7 +212,7 @@ public class LabTechWorkAreaJPanel extends javax.swing.JPanel {
 
             request.setStatus("Processing");
 
-            ProcessWorkRequestJPanel processWorkRequestJPanel = new ProcessWorkRequestJPanel(userProcessContainer, request);
+            ProcessTestRequestJPanel processWorkRequestJPanel = new ProcessTestRequestJPanel(userProcessContainer, request);
             userProcessContainer.add("processWorkRequestJPanel", processWorkRequestJPanel);
             CardLayout layout = (CardLayout) userProcessContainer.getLayout();
             layout.next(userProcessContainer);

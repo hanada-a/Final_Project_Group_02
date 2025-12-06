@@ -44,28 +44,31 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
 
     
     private void populateRequestTable() {
-        
-        DefaultTableModel model = (DefaultTableModel) tblWorkRequests.getModel();
-        model.setRowCount(0);
-        
-        // Get prescription requests assigned to this pharmacist
-        for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
-            if (request instanceof PrescriptionRequest && request.getReceiver() != null 
-                    && request.getReceiver().equals(userAccount)) {
-                PrescriptionRequest rxRequest = (PrescriptionRequest) request;
-                
-                Object[] row = new Object[8];
-                row[0] = rxRequest.getPatientName() != null ? rxRequest.getPatientName() : "Unknown";
-                row[1] = rxRequest.getMedicationName() != null ? rxRequest.getMedicationName() : "N/A";
-                row[2] = rxRequest.getDosage() != null ? rxRequest.getDosage() : "N/A";
-                row[3] = rxRequest.getQuantity();
-                row[4] = rxRequest.getPrescribingDoctor() != null ? rxRequest.getPrescribingDoctor() : "N/A";
-                row[5] = rxRequest.getStatus() != null ? rxRequest.getStatus() : "Pending";
-                row[6] = rxRequest.getFulfillmentNotes() != null ? rxRequest.getFulfillmentNotes() : "-";
-                row[7] = rxRequest.getRequestDate();
-                
-                model.addRow(row);
+        try {
+            DefaultTableModel model = (DefaultTableModel) tblWorkRequests.getModel();
+            model.setRowCount(0);
+
+            // Get prescription requests assigned to this pharmacist
+            for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
+                if (request instanceof PrescriptionRequest && request.getReceiver() != null && request.getReceiver().equals(userAccount)) {
+                    PrescriptionRequest rxRequest = (PrescriptionRequest) request;
+
+                    Object[] row = new Object[8];
+                    row[0] = rxRequest.getPatientName() != null ? rxRequest.getPatientName() : "Unknown";
+                    row[1] = rxRequest.getMedicationName() != null ? rxRequest.getMedicationName() : "N/A";
+                    row[2] = rxRequest.getDosage() != null ? rxRequest.getDosage() : "N/A";
+                    row[3] = rxRequest.getQuantity();
+                    row[4] = rxRequest.getPrescribingDoctor() != null ? rxRequest.getPrescribingDoctor() : "N/A";
+                    row[5] = rxRequest.getStatus() != null ? rxRequest.getStatus() : "Pending";
+                    row[6] = rxRequest.getFulfillmentNotes() != null ? rxRequest.getFulfillmentNotes() : "-";
+                    row[7] = rxRequest.getRequestDate();
+
+                    model.addRow(row);
+                    
+                }
             }
+        } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error loading prescriptions: " + e.getMessage());
         }
     }
     
@@ -232,6 +235,9 @@ public class PharmacistWorkAreaJPanel extends javax.swing.JPanel {
             
             txtFulfillmentNotes.setText("");
             populateRequestTable();
+            
+        } else {
+            JOptionPane.showMessageDialog(this, "Request not found in system");
         }
         
     }//GEN-LAST:event_btnFulfillPrescriptionActionPerformed

@@ -49,46 +49,55 @@ public class VaccineStorageSpecialistWorkAreaJPanel extends javax.swing.JPanel {
     
     
     private void populateVaccineInventory() {
-        DefaultTableModel model = (DefaultTableModel) tblInventory.getModel();
-        model.setRowCount(0);
-        
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        
-        for (Vaccine vaccine : business.getVaccineDirectory()) {
-            Object[] row = new Object[5];
-            row[0] = vaccine.getName();
-            row[1] = vaccine.getManufacturer();
-            row[2] = 1000; // TODO given more time-- track stored vaccine inventory
-            row[3] = vaccine.getExpirationDate() != null ? sdf.format(vaccine.getExpirationDate()) : "N/A";
-            row[4] = vaccine.getStorageTemperature() != null ? vaccine.getStorageTemperature() : "N/A";
-            
-            model.addRow(row);
+        try {
+            DefaultTableModel model = (DefaultTableModel) tblInventory.getModel();
+            model.setRowCount(0);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+            for (Vaccine vaccine : business.getVaccineDirectory()) {
+                Object[] row = new Object[5];
+                row[0] = vaccine.getName();
+                row[1] = vaccine.getManufacturer();
+                row[2] = 1000; // TODO given more time-- track stored vaccine inventory
+                row[3] = vaccine.getExpirationDate() != null ? sdf.format(vaccine.getExpirationDate()) : "N/A";
+                row[4] = vaccine.getStorageTemperature() != null ? vaccine.getStorageTemperature() : "N/A";
+
+                model.addRow(row);
+                
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error loading inventory: " + e.getMessage());
         }
     }
     
     
     private void populateReports() {
-        DefaultTableModel model = (DefaultTableModel) tblReports.getModel();
-        model.setRowCount(0);
-        
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        
-        // This specialist's failure reports
-        for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
-            if (request instanceof ColdChainFailureRequest && request.getSender() != null 
-                    && request.getSender().equals(userAccount)) {
-                ColdChainFailureRequest ccRequest = (ColdChainFailureRequest) request;
-                
-                Object[] row = new Object[6];
-                row[0] = sdf.format(ccRequest.getRequestDate());
-                row[1] = ccRequest.getAffectedVaccine() != null ? ccRequest.getAffectedVaccine().getName() : "N/A";
-                row[2] = ccRequest.getAffectedQuantity();
-                row[3] = ccRequest.getFailureType() != null ? ccRequest.getFailureType() : "N/A";
-                row[4] = ccRequest.getStatus() != null ? ccRequest.getStatus() : "Pending";
-                row[5] = ccRequest.getReplacementStatus() != null ? ccRequest.getReplacementStatus() : "Pending";
-                
-                model.addRow(row);
+        try {
+            DefaultTableModel model = (DefaultTableModel) tblReports.getModel();
+            model.setRowCount(0);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+            // This specialist's failure reports
+            for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
+                if (request instanceof ColdChainFailureRequest && request.getSender() != null && request.getSender().equals(userAccount)) {
+                    ColdChainFailureRequest ccRequest = (ColdChainFailureRequest) request;
+
+                    Object[] row = new Object[6];
+                    row[0] = sdf.format(ccRequest.getRequestDate());
+                    row[1] = ccRequest.getAffectedVaccine() != null ? ccRequest.getAffectedVaccine().getName() : "N/A";
+                    row[2] = ccRequest.getAffectedQuantity();
+                    row[3] = ccRequest.getFailureType() != null ? ccRequest.getFailureType() : "N/A";
+                    row[4] = ccRequest.getStatus() != null ? ccRequest.getStatus() : "Pending";
+                    row[5] = ccRequest.getReplacementStatus() != null ? ccRequest.getReplacementStatus() : "Pending";
+
+                    model.addRow(row);
+                    
+                }
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error loading reports: " + e.getMessage());
         }
     }
     
