@@ -20,33 +20,44 @@ The Public Health Information Management System is a comprehensive multi-enterpr
   1. Centers for Disease Control (CDC)
   2. New York State Health Department
   3. Northeast Healthcare Provider Network
-- 6 Organizations:
+- 9 Organizations:
   1. Disease Surveillance Division (CDC)
   2. Vaccine Distribution Coordination (CDC)
   3. Public Health Services (State)
   4. Healthcare Provider Registry (State)
-  5. Northeast Regional Medical Center (Provider)
-  6. Brooklyn Community Health Clinic (Provider)
+  5. Northeast Regional Medical Center (Hospital)
+  6. Brooklyn Community Health Clinic (Clinic)
+  7. Northeast Regional Medical Laboratory (Lab)
+  8. Northeast Regional Pharmacy (Pharmacy)
+  9. Cold Chain Storage Facilities (Hospital & Pharmacy)
 
 ### Key Features
 
-✅ **8 Unique Roles:**
-1. Epidemiologist - Disease pattern analysis and alerts
-2. Data Analyst - Statistical analysis and reporting
-3. Distribution Coordinator - Vaccine allocation management
-4. Public Health Officer - State health coordination
-5. Provider Coordinator - Healthcare provider registry
-6. Hospital Administrator - Hospital operations
-7. Clinic Manager - Clinic operations and vaccine requests
-8. Nurse Practitioner - Patient care and disease reporting
+✅ **13 Unique Roles:**
+1. System Administrator - Ecosystem-level administration
+2. Epidemiologist - Disease pattern analysis and alerts
+3. Data Analyst - Statistical analysis and reporting
+4. Distribution Coordinator - Vaccine allocation management
+5. Public Health Officer - State health coordination
+6. Provider Coordinator - Healthcare provider registry
+7. Hospital Administrator - Hospital operations and prescription management
+8. Clinic Manager - Clinic operations, vaccine requests, and lab test requests
+9. Nurse Practitioner - Patient care and disease reporting
+10. Doctor - Medical consultations and lab test requests
+11. Lab Technician - Laboratory test processing and analysis
+12. Pharmacist - Prescription fulfillment and medication management
+13. Vaccine Storage Specialist - Cold chain monitoring and failure reporting
 
-✅ **6+ Work Request Types:**
+✅ **9 Work Request Types:**
 1. VaccineAllocationRequest (Cross-Enterprise: State → CDC)
-2. DiseaseReportRequest (Multi-level: Provider → State → CDC)
-3. VaccineShipmentRequest (Cross-Organization: Clinic → State)
-4. PatientAppointmentRequest (Same Enterprise: Clinic → Hospital)
+2. DiseaseReportRequest (Multi-level: Clinic/Nurse → State → CDC)
+3. VaccineShipmentRequest (Cross-Organization: Clinic → Provider Registry)
+4. PatientAppointmentRequest (Cross-Organization: Clinic → Hospital)
 5. ComplianceAuditRequest (Cross-Enterprise: State → Provider)
 6. HealthDataAnalysisRequest (Data Request: CDC → State)
+7. LabTestRequest (Cross-Organization: Clinic/Doctor → Lab)
+8. PrescriptionRequest (Cross-Organization: Hospital → Pharmacy)
+9. ColdChainFailureRequest (Cross-Organization: Storage Specialist → Provider Coordinator)
 
 ✅ **Security Features:**
 - Strong password validation (minimum 8 characters, uppercase, lowercase, digit)
@@ -62,12 +73,15 @@ The Public Health Information Management System is a comprehensive multi-enterpr
 - Unique ID generation for all entities
 
 ✅ **Pre-populated Data (Using Faker Library):**
-- **50+ employees** with realistic names, emails, and phone numbers across 9 organizations
-- **25+ work requests** demonstrating all workflow types with varied statuses
+- **60+ employees** with realistic names, emails, and phone numbers across 9 organizations
+- **40+ work requests** demonstrating all 9 workflow types with varied statuses
 - 4 vaccines (COVID-19, Influenza, MMR, Hepatitis B)
 - 4 diseases (COVID-19, Influenza, Measles, Tuberculosis)
 - **JavaFaker integration** for realistic, analytics-ready demo data
 - Professional contact information (emails matching organizational domains)
+- 5 lab test requests (Clinic → Lab)
+- 5 prescription requests (Hospital → Pharmacy)
+- 4 cold chain failure reports (Storage Specialist → Provider Coordinator)
 - Diverse job titles and specializations using Faker's job title generator
 
 ✅ **Reporting & Analytics (NEW):**
@@ -162,6 +176,38 @@ The system comes pre-configured with the following test accounts:
 - Username: `susan.taylor`
 - Password: `Clinic@2024!`
 
+**Hospital - Vaccine Storage Manager:**
+- Username: `ray.kim`
+- Password: `Cold@2024!`
+
+**Hospital - Cold Chain Specialist:**
+- Username: `jay.poe`
+- Password: `Cold@2024!`
+
+**Lab - Lab Director:**
+- Username: `lisa.ann`
+- Password: `Lab@2024!`
+
+**Lab - Sr Lab Technician:**
+- Username: `john.bob`
+- Password: `Lab@2024!`
+
+**Lab - Lab Technician:**
+- Username: `mary.sue`
+- Password: `Lab@2024!`
+
+**Pharmacy - Lead Pharmacist:**
+- Username: `dan.man`
+- Password: `Pharm@2024!`
+
+**Pharmacy - Clinical Pharmacist:**
+- Username: `kim.park`
+- Password: `Pharm@2024!`
+
+**Pharmacy - Vaccine Storage Mgr:**
+- Username: `mae.toh`
+- Password: `Cold@2024!`
+
 ---
 
 ## PROJECT STRUCTURE
@@ -186,16 +232,20 @@ Final_Project1/
 │   │   │
 │   │   ├── Organization/
 │   │   │   ├── Organization.java (Abstract)
+│   │   │   ├── AdminOrganization.java
 │   │   │   ├── DiseaseSurveillanceOrganization.java
 │   │   │   ├── VaccineDistributionOrganization.java
 │   │   │   ├── PublicHealthServicesOrganization.java
 │   │   │   ├── ProviderRegistryOrganization.java
 │   │   │   ├── HospitalOrganization.java
 │   │   │   ├── ClinicOrganization.java
+│   │   │   ├── LabOrganization.java
+│   │   │   ├── PharmacyOrganization.java
 │   │   │   └── OrganizationDirectory.java
 │   │   │
 │   │   ├── Role/
 │   │   │   ├── Role.java (Abstract)
+│   │   │   ├── AdminRole.java
 │   │   │   ├── EpidemiologistRole.java
 │   │   │   ├── DataAnalystRole.java
 │   │   │   ├── DistributionCoordinatorRole.java
@@ -203,7 +253,11 @@ Final_Project1/
 │   │   │   ├── ProviderCoordinatorRole.java
 │   │   │   ├── HospitalAdminRole.java
 │   │   │   ├── ClinicManagerRole.java
-│   │   │   └── NursePractitionerRole.java
+│   │   │   ├── NursePractitionerRole.java
+│   │   │   ├── DoctorRole.java
+│   │   │   ├── LabTechRole.java
+│   │   │   ├── PharmacistRole.java
+│   │   │   └── VaccineStorageSpecialistRole.java
 │   │   │
 │   │   ├── UserAccount/
 │   │   │   ├── UserAccount.java
@@ -217,7 +271,10 @@ Final_Project1/
 │   │   │   ├── VaccineShipmentRequest.java
 │   │   │   ├── PatientAppointmentRequest.java
 │   │   │   ├── ComplianceAuditRequest.java
-│   │   │   └── HealthDataAnalysisRequest.java
+│   │   │   ├── HealthDataAnalysisRequest.java
+│   │   │   ├── LabTestRequest.java
+│   │   │   ├── PrescriptionRequest.java
+│   │   │   └── ColdChainFailureRequest.java
 │   │   │
 │   │   └── Util/
 │   │       ├── EmailValidator.java
@@ -232,6 +289,8 @@ Final_Project1/
 │       ├── MainJFrame.java
 │       ├── LoginScreen.java
 │       ├── MainScreen.java
+│       ├── AdministrativeRole/
+│       │   └── (Admin panels)
 │       ├── EpidemiologistRole/
 │       │   └── EpidemiologistWorkAreaJPanel.java
 │       ├── DataAnalystRole/
@@ -243,11 +302,23 @@ Final_Project1/
 │       ├── ProviderCoordinatorRole/
 │       │   └── ProviderCoordinatorWorkAreaJPanel.java
 │       ├── HospitalAdminRole/
-│       │   └── HospitalAdminWorkAreaJPanel.java
+│       │   ├── HospitalAdminWorkAreaJPanel.java
+│       │   └── SubmitPrescriptionJPanel.java
 │       ├── ClinicManagerRole/
-│       │   └── ClinicManagerWorkAreaJPanel.java
-│       └── NursePractitionerRole/
-│           └── NursePractitionerWorkAreaJPanel.java
+│       │   ├── ClinicManagerWorkAreaJPanel.java
+│       │   ├── RequestLabTestJPanel.java
+│       │   └── SchedulePatientAppointmentsJPanel.java
+│       ├── NursePractitionerRole/
+│       │   ├── NursePractitionerWorkAreaJPanel.java
+│       │   └── ReportDiseaseCasesJPanel.java
+│       ├── DoctorRole/
+│       │   └── (Doctor panels)
+│       ├── LabTechRole/
+│       │   └── LabTechWorkAreaJPanel.java
+│       ├── PharmacistRole/
+│       │   └── PharmacistWorkAreaJPanel.java
+│       └── VaccineStorageSpecialistRole/
+│           └── VaccineStorageSpecialistWorkAreaJPanel.java
 ```
 
 ---
@@ -274,9 +345,9 @@ Final_Project1/
 ## WORKFLOW EXAMPLES
 
 ### Cross-Enterprise Workflow: Disease Reporting
-1. **Nurse** at Brooklyn Clinic reports COVID-19 cases
-2. Report forwarded to **Public Health Officer** at State Health Dept
-3. Officer reviews and escalates to **Epidemiologist** at CDC
+1. **Nurse Practitioner** at Brooklyn Clinic reports COVID-19 cases
+2. Report automatically routed to **Public Health Officer** at State Health Dept
+3. Officer reviews and forwards to **Epidemiologist** at CDC
 4. Epidemiologist analyzes trends and issues alerts
 
 ### Cross-Enterprise Workflow: Vaccine Allocation
@@ -285,11 +356,29 @@ Final_Project1/
 3. Coordinator approves allocation and schedules shipment
 4. Vaccines distributed to state and then to clinics/hospitals
 
-### Same-Enterprise Workflow: Patient Appointment
-1. **Clinic Manager** schedules patient for second vaccine dose
-2. Request sent to **Hospital Administrator**
+### Cross-Organization Workflow: Patient Appointment
+1. **Clinic Manager** schedules patient appointment
+2. Request automatically routed to **Hospital Administrator**
 3. Administrator confirms appointment slot
-4. **Nurse Practitioner** administers vaccine
+4. **Nurse Practitioner** or **Doctor** provides care
+
+### Cross-Organization Workflow: Lab Testing (NEW)
+1. **Clinic Manager** submits lab test request for patient
+2. Request automatically routed to **Lab Organization**
+3. **Lab Technician** processes test and records results
+4. Results available to clinic manager for patient follow-up
+
+### Cross-Organization Workflow: Prescription Fulfillment (NEW)
+1. **Hospital Administrator** submits prescription request
+2. Request automatically routed to **Pharmacy Organization**
+3. **Pharmacist** reviews and fulfills prescription
+4. Pharmacist adds fulfillment notes visible to hospital admin
+
+### Cross-Organization Workflow: Cold Chain Management (NEW)
+1. **Vaccine Storage Specialist** reports cold chain failure
+2. Request automatically routed to **Provider Coordinator**
+3. Coordinator reviews failure details and approves replacement
+4. Replacement vaccines allocated and contaminated vaccines disposed
 
 ---
 
@@ -321,7 +410,7 @@ All user inputs are validated:
 
 ### Benefits
 ✅ **Realistic Demo Data**: Professional-looking names, emails, phone numbers  
-✅ **Analytics-Ready**: 50+ employees and 25+ work requests for dashboard testing  
+✅ **Analytics-Ready**: 60+ employees and 40+ work requests for dashboard testing  
 ✅ **Easy Setup**: Single JAR file, no complex configuration  
 ✅ **Fallback Support**: Works without Faker (uses simple data generator)  
 ✅ **Production-Quality**: Data appears authentic for demonstrations
@@ -364,11 +453,39 @@ See `FAKER_SETUP_INSTRUCTIONS.md` for complete setup guide.
   - Password reset with account unlock
   - Failed login attempts display
 
+✅ **New Workflow Implementations (December 2024)**
+- **Lab Test Workflow**: Clinic Manager → Lab Technician
+  - Request lab tests for patients with urgency levels
+  - Lab technicians process tests and add results
+  - Cross-organization routing (Clinic → Lab)
+  - 5 pre-populated demo lab test requests
+  
+- **Prescription Workflow**: Hospital Admin → Pharmacist
+  - Submit prescription requests with patient details
+  - 10 medication options (Penicillin, Gabapentin, etc.)
+  - Pharmacists fulfill prescriptions and add notes
+  - Enhanced table with 7 columns including quantity and fulfillment notes
+  - 5 pre-populated demo prescriptions (3 pending, 2 fulfilled)
+  
+- **Cold Chain Failure Workflow**: Storage Specialist → Provider Coordinator
+  - Report vaccine storage failures (temperature, equipment, power)
+  - Track affected vaccines and exposure duration
+  - Coordinator approves replacements and manages disposal
+  - 4 pre-populated cold chain failure reports
+
+✅ **Cross-Organization Routing Fixes (December 2024)**
+- Fixed disease report routing: Nurse → Public Health → CDC
+- Fixed vaccine shipment routing: Clinic → Provider Registry
+- Fixed patient appointment routing: Clinic → Hospital
+- Fixed epidemiologist work area: Proper filtering of mixed request types
+- All workflows now properly route to both sender and receiver queues
+
 ✅ **Comprehensive Error Handling**
 - Try-catch blocks throughout all operations
 - NULL checks before data access
 - User-friendly error dialogs with specific messages
 - Validation exceptions with clear guidance
+- Fixed ClassCastException in Epidemiologist work area
 
 ✅ **Export Functionality**
 - System Overview (CSV)
@@ -380,26 +497,71 @@ See `FAKER_SETUP_INSTRUCTIONS.md` for complete setup guide.
 
 ---
 
+## RECENT UPDATES & BUG FIXES (December 2024)
+
+### Pull Request #5 - Merged from maxwellsowell
+**Status**: ✅ Approved and Merged
+
+**Changes**:
+- Enhanced SubmitPrescriptionJPanel UI with improved table layout
+- Added "Quantity" column to prescription display (now 7 columns)
+- Reordered columns for better readability: Date, Patient, Medication, Dosage, Quantity, Status, Notes
+- Quantity displays as "X pills" format for clarity
+- Code formatting improvements in ConfigureABusiness.java
+- Updated author attribution for collaborative work
+
+**Files Modified**:
+- `src/ui/HospitalAdminRole/SubmitPrescriptionJPanel.java`
+- `src/business/ConfigureABusiness.java`
+
+### Critical Bug Fixes
+1. **Disease Report Routing** (susan.taylor → emily.thompson)
+   - Fixed: Nurse disease reports now route to Public Health Services
+   - Added cross-organization routing with proper disease report fields
+   
+2. **Epidemiologist ClassCastException**
+   - Fixed: Proper filtering when work queue contains mixed request types
+   - Prevents crashes when viewing disease reports with other request types present
+   
+3. **Patient Appointment Routing** (christopher.lee → amanda.garcia)
+   - Fixed: Clinic appointments now route to Hospital organization
+   - Cross-organization visibility for appointment coordination
+
+### System Enhancements
+- All 9 workflow types fully tested and operational
+- 60+ employees across 9 organizations
+- 40+ pre-populated work requests demonstrating all workflows
+- Enhanced demo data with realistic scenarios
+- Improved table displays across all role panels
+
+---
+
 ## TEAM CONTRIBUTIONS
 
 **Akira Hanada:**
 - Business model architecture (EcoSystem, Network, Enterprise)
 - Security implementation (password hashing, validation)
-- Role and Organization implementations
-- Work Request types and workflows
-- System configuration and data population
-
-**Travis Hodo:**
-- UI/UX design and implementation
-- Work area panels for 8 roles
-- Authentication system
-- Form validations
+- All Role and Organization implementations (13 roles, 9 org types)
+- All Work Request types and cross-organization routing (9 request types)
+- System configuration and comprehensive data population
+- Bug fixes and workflow validations
+- System reporting dashboard and analytics
 
 **Maxwell Sowell:**
-- Testing and quality assurance
-- Documentation
+- Lab test workflow implementation
+- Prescription workflow implementation
+- Cold chain failure workflow implementation
+- Testing and quality assurance across all workflows
+- UI enhancements and table improvements
 - Bug fixes and error handling
-- User acceptance testing
+- User acceptance testing and validation
+
+**Travis Hodo:**
+- Initial UI/UX design and implementation
+- Work area panels foundation
+- Authentication system
+- Form validations
+- (Withdrawn from the group - contributions through early development)
 
 ---
 
