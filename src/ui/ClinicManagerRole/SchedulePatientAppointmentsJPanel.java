@@ -1,6 +1,8 @@
 package ui.ClinicManagerRole;
 
 import business.Business;
+import business.Enterprise;
+import business.Network;
 import business.Organization.Organization;
 import business.UserAccount.UserAccount;
 import business.WorkQueue.PatientAppointmentRequest;
@@ -185,6 +187,27 @@ public class SchedulePatientAppointmentsJPanel extends JPanel {
             
             account.getWorkQueue().getWorkRequestList().add(request);
             organization.getWorkQueue().getWorkRequestList().add(request);
+            
+            // Route to Hospital organization (for amanda.garcia to view)
+            Organization hospitalOrg = null;
+            for (Network network : business.getEcoSystem().getNetworkList()) {
+                for (Enterprise enterprise : network.getEnterpriseList()) {
+                    if (enterprise.getName().contains("Healthcare") || enterprise.getName().contains("Provider")) {
+                        for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+                            if (org.getName().contains("Hospital") || org.getName().contains("Medical Center")) {
+                                hospitalOrg = org;
+                                break;
+                            }
+                        }
+                        if (hospitalOrg != null) break;
+                    }
+                }
+                if (hospitalOrg != null) break;
+            }
+            
+            if (hospitalOrg != null) {
+                hospitalOrg.getWorkQueue().getWorkRequestList().add(request);
+            }
             
             // Update table
             tableModel.insertRow(0, new Object[]{
