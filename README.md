@@ -557,11 +557,8 @@ See `FAKER_SETUP_INSTRUCTIONS.md` for complete setup guide.
 - User acceptance testing and validation
 
 **Travis Hodo:**
-- Initial UI/UX design and implementation
-- Work area panels foundation
-- Authentication system
-- Form validations
-- (Withdrawn from the group - contributions through early development)
+- N/A
+- (Withdrawn from the group)
 
 ---
 
@@ -569,7 +566,6 @@ See `FAKER_SETUP_INSTRUCTIONS.md` for complete setup guide.
 
 For questions or issues, please contact:
 - Akira Hanada: hanada.a@northeastern.edu
-- Travis Hodo: hodo.t@northeastern.edu  
 - Maxwell Sowell: sowell.m@northeastern.edu
 
 ---
@@ -577,4 +573,4 @@ For questions or issues, please contact:
 ## LICENSE
 
 This project is submitted as academic work for Northeastern University.
-© 2024 Akira Hanada, Travis Hodo, Maxwell Sowell. All Rights Reserved.
+© 2025 Akira Hanada, Maxwell Sowell. All Rights Reserved.
