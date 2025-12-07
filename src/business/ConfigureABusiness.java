@@ -340,12 +340,12 @@ public class ConfigureABusiness {
                                 "john.miller", "Hospital@2024!");
         
         createEmployeeAndAccount(hospital, "Dr. Ray Kim", "ray.kim@nrmc.org", 
-                                "(212) 555-0510", "Vaccine Storage Manager", new VaccineStorageSpecialistRole(), 
-                                "ray.kim", "Cold@2024!");
-        
+                "(212) 555-0510", "Vaccine Storage Manager", new VaccineStorageSpecialistRole(), 
+                "ray.kim", "Cold@2024!");
+
         createEmployeeAndAccount(hospital, "Jay Poe", "jay.poe@nrmc.org", 
-                                "(212) 555-0511", "Cold Chain Specialist", new VaccineStorageSpecialistRole(), 
-                                "jay.poe", "Cold@2024!");
+                "(212) 555-0511", "Cold Chain Specialist", new VaccineStorageSpecialistRole(), 
+                "jay.poe", "Cold@2024!");
         
         // Generate additional hospital staff
         for (int i = 0; i < 5; i++) {
@@ -401,18 +401,18 @@ public class ConfigureABusiness {
                 "Northeast Regional Medical Laboratory", Organization.Type.Lab);
         
         createEmployeeAndAccount(labOrg, "John Bob", "john.bob@nrml.org", 
-                                "(212) 555-0701", "Senior Lab Technician", new LabTechRole(), 
-                                "john.bob", "Lab@2024!");
-        
+                "(212) 555-0701", "Senior Lab Technician", new LabTechRole(), 
+                "john.bob", "Lab@2024!");
+
         createEmployeeAndAccount(labOrg, "Mary Sue", "mary.sue@nrml.org", 
-                                "(212) 555-0702", "Lab Technician", new LabTechRole(), 
-                                "mary.sue", "Lab@2024!");
-        
+                "(212) 555-0702", "Lab Technician", new LabTechRole(), 
+                "mary.sue", "Lab@2024!");
+
         createEmployeeAndAccount(labOrg, "Dr. Lisa Ann", "lisa.ann@nrml.org", 
-                                "(212) 555-0703", "Lab Director", new LabTechRole(), 
-                                "lisa.ann", "Lab@2024!");
+                "(212) 555-0703", "Lab Director", new LabTechRole(), 
+                "lisa.ann", "Lab@2024!");
         
-        // Generate additional lab staff
+        // Generate additional lab staff with Faker
         for (int i = 0; i < 5; i++) {
             String name = generateName();
             createEmployeeAndAccount(labOrg, name, generateEmail(name, "nrml.org"),
@@ -427,22 +427,22 @@ public class ConfigureABusiness {
                 "Northeast Regional Pharmacy", Organization.Type.Pharmacy);
         
         createEmployeeAndAccount(pharmacyOrg, "Dan Man", "dan.man@nrp.org", 
-                                "(212) 555-0801", "Lead Pharmacist", new PharmacistRole(), 
-                                "dan.man", "Pharm@2024!");
-        
+                "(212) 555-0801", "Lead Pharmacist", new PharmacistRole(), 
+                "dan.man", "Pharm@2024!");
+
         createEmployeeAndAccount(pharmacyOrg, "Al Joe", "al.joe@nrp.org", 
-                                "(212) 555-0802", "Staff Pharmacist", new PharmacistRole(), 
-                                "al.joe", "Pharm@2024!");
-        
+                "(212) 555-0802", "Staff Pharmacist", new PharmacistRole(), 
+                "al.joe", "Pharm@2024!");
+
         createEmployeeAndAccount(pharmacyOrg, "Kim Park", "kim.park@nrp.org", 
-                                "(212) 555-0803", "Clinical Pharmacist", new PharmacistRole(), 
-                                "kim.park", "Pharm@2024!");
-        
+                "(212) 555-0803", "Clinical Pharmacist", new PharmacistRole(), 
+                "kim.park", "Pharm@2024!");
+
         createEmployeeAndAccount(pharmacyOrg, "Mae Toh", "mae.toh@nrp.org", 
-                                "(212) 555-0810", "Vaccine Storage Manager", new VaccineStorageSpecialistRole(), 
-                                "mae.toh", "Cold@2024!");
+                "(212) 555-0810", "Vaccine Storage Manager", new VaccineStorageSpecialistRole(), 
+                "mae.toh", "Cold@2024!");
         
-        // Generate additional pharmacy staff
+        // Generate additional pharmacy staff with Faker
         for (int i = 0; i < 3; i++) {
             String name = generateName();
             createEmployeeAndAccount(pharmacyOrg, name, generateEmail(name, "nrp.org"),
@@ -728,6 +728,8 @@ public class ConfigureABusiness {
         String[] dosages = {"250mg", "800mg", "5mg", "1mg", "20mg"};
         int[] quantities = {30, 120, 15, 60, 90};
         
+        
+        // Demo prescriptions sent from Hospital Admin (Dr. Amanda Garcia) to Pharmacist (Dan Man)
         for (int i = 0; i < 5; i++) {
             PrescriptionRequest rxRequest = new PrescriptionRequest();
             
@@ -736,9 +738,7 @@ public class ConfigureABusiness {
             rxRequest.setDosage(dosages[i]);
             rxRequest.setQuantity(quantities[i]);
             rxRequest.setPrescribingDoctor("Dr. Amanda Garcia");
-            rxRequest.setMessage("Prescription for " + medications[i] + " - " + dosages[i]);
-            
-            // Demo prescriptions sent from Hospital Admin (Dr. Amanda Garcia) to Pharmacist (Dan Man)
+            rxRequest.setMessage("Prescription: " + medications[i] + dosages[i] + " for " + rxRequest.getPatientName());
             rxRequest.setSender(hospital.getUserAccountDirectory().getUserAccountList().get(0));
             rxRequest.setReceiver(pharmacyOrg.getUserAccountDirectory().getUserAccountList().get(0));
             
@@ -749,6 +749,7 @@ public class ConfigureABusiness {
                 rxRequest.setResolveDate(getDateInPast(random.nextInt(3) + 1));
             }
             
+            hospital.getWorkQueue().getWorkRequestList().add(rxRequest);
             pharmacyOrg.getWorkQueue().getWorkRequestList().add(rxRequest);
         }
         
