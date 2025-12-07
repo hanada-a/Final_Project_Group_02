@@ -20,7 +20,8 @@ import javax.swing.table.DefaultTableModel;
 /**
  * Panel for hospital admin to submit prescription requests to pharmacy
  * 
- * @author maxwellsowell
+ * @author Maxwell Sowell
+ * @author Akira Hanada
  */
 public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
 
@@ -29,9 +30,7 @@ public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
     private Organization organization;
     private Business business;
 
-    /**
-     * Creates new form SubmitPrescriptionJPanel
-     */
+
     public SubmitPrescriptionJPanel(JPanel userProcessContainer, UserAccount account, Organization organization, Business business) {
         this.userProcessContainer = userProcessContainer;
         this.userAccount = account;
@@ -62,14 +61,15 @@ public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
                     && request.getSender().equals(userAccount)) {
                 PrescriptionRequest rxRequest = (PrescriptionRequest) request;
                 
-                Object[] row = new Object[6];
+                Object[] row = new Object[7];
                 row[0] = sdf.format(rxRequest.getRequestDate());
                 row[1] = rxRequest.getPatientName() != null ? rxRequest.getPatientName() : "Unknown";
                 row[2] = rxRequest.getMedicationName() != null ? rxRequest.getMedicationName() : "N/A";
                 row[3] = rxRequest.getDosage() != null ? rxRequest.getDosage() : "N/A";
-                row[4] = rxRequest.getStatus() != null ? rxRequest.getStatus() : "Pending";
-                row[5] = rxRequest.getQuantity() > 0 ? rxRequest.getQuantity() + " pills" : "-";
-                
+                row[4] = rxRequest.getQuantity() > 0 ? rxRequest.getQuantity() + " pills" : "-";
+                row[5] = rxRequest.getStatus() != null ? rxRequest.getStatus() : "Pending";
+                row[6] = rxRequest.getFulfillmentNotes() != null ? rxRequest.getFulfillmentNotes() : "-";
+
                 model.addRow(row);
             }
         }
@@ -108,20 +108,20 @@ public class SubmitPrescriptionJPanel extends javax.swing.JPanel {
 
         tblPrescriptions.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Date", "Patient", "Medication", "Dosage", "Status", "Notes"
+                "Date", "Patient", "Medication", "Dosage", "Quantity", "Status", "Notes"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
