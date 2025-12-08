@@ -562,6 +562,16 @@ See `FAKER_SETUP_INSTRUCTIONS.md` for complete setup guide.
 
 ---
 
+## PROJECT DOCUMENTS
+
+The following documents are stored in https://github.com/hanada-a/Final_Project_Group_02/tree/main/documents:
+- Project Proposal
+- Presentation slides
+- High-level component diagram
+- UML class diagram
+
+---
+
 ## CONTACT
 
 For questions or issues, please contact:
